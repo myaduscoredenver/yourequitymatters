@@ -460,12 +460,12 @@
             <img src="logo.png" alt="Homestead Real Estate LLC" class="logo">
             <nav>
                 <a href="index.html">Home</a>
-                <a href="downsizing-guide.html#calculator">Equity Calculator</a>
-                <a href="#next-steps">Next Steps</a>
+                <a href="downsizing-guide.html#calculator">Downsizing Guide</a>
+                <a href="index.html#consultation">Next Steps</a>
             </nav>
             <div class="header-right">
                 <span class="phone-number">720-340-6743</span>
-                <a href="#next-steps" class="free-consultation-btn">Free Consultation</a>
+                <a href="index.html#consultation" class="free-consultation-btn">Free Consultation</a>
             </div>
         </div>
     </header>
@@ -771,7 +771,7 @@
         </div>
 
         <!-- Section 9 -->
-        <div class="section" id="next-steps">
+        <div class="section" id="consultation">
             <div class="section-title">
                 <div class="section-number">9</div>
                 <h2>Ready to Take the Next Step?</h2>
@@ -816,5 +816,77 @@
         <p>© 2026 Homestead Real Estate, LLC. All rights reserved.</p>
         <p>Longmont, Colorado | 17 years of local real estate expertise</p>
     </footer>
+
+    <script>
+        const propertyDatabase = [
+            { address: "1345 Lincoln St", purchasePrice: 195000, purchaseDate: "2011" },
+            { address: "1234 Pearl St", purchasePrice: 280000, purchaseDate: "2008" },
+        ];
+
+        function getAppreciationRate(year) {
+            if (year >= 1990 && year <= 2008) return 0.04;
+            if (year >= 2009 && year <= 2013) return 0.04;
+            if (year >= 2014 && year <= 2019) return 0.08;
+            if (year === 2020) return 0.15;
+            if (year === 2021) return 0.07;
+            if (year === 2022) return 0.05;
+            if (year === 2023) return -0.03;
+            if (year === 2024) return -0.02;
+            if (year === 2025) return 0.00;
+            if (year === 2026) return 0.00;
+            return 0.04;
+        }
+
+        function calculateEquity(purchasePrice, purchaseDate) {
+            const year = parseInt(purchaseDate);
+            const currentYear = 2026;
+            const yearsOwned = currentYear - year;
+            
+            let value = purchasePrice;
+            for (let i = 0; i < yearsOwned; i++) {
+                const yearOfOwnership = year + i;
+                const rate = getAppreciationRate(yearOfOwnership);
+                value *= (1 + rate);
+            }
+            
+            return {
+                currentValue: Math.round(value),
+                originalPrice: purchasePrice,
+                equity: Math.round(value - purchasePrice),
+                yearsOwned: yearsOwned
+            };
+        }
+
+        function formatCurrency(n) {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(n);
+        }
+
+        function handleCalculateClick() {
+            const addressInput = document.querySelector('input[placeholder*="1345 Lincoln"]');
+            if (!addressInput) return;
+            
+            const address = addressInput.value.trim();
+            if (!address) {
+                alert('Please enter an address');
+                return;
+            }
+            
+            const found = propertyDatabase.find(p => p.address.toLowerCase().includes(address.toLowerCase()));
+            if (found) {
+                const result = calculateEquity(found.purchasePrice, found.purchaseDate);
+                alert(`Your estimated equity: ${formatCurrency(result.equity)}\n\nCurrent Value: ${formatCurrency(result.currentValue)}\nYears Owned: ${result.yearsOwned}`);
+            } else {
+                alert('Address not found in our database. Please call us at 720-340-6743 for a free valuation.');
+            }
+        }
+
+        // Attach click handler to calculate button
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.querySelector('button');
+            if (calculateBtn && calculateBtn.textContent.includes('Calculate')) {
+                calculateBtn.addEventListener('click', handleCalculateClick);
+            }
+        });
+    </script>
 </body>
 </html>
