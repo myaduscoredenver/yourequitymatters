@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Equity Matters - Longmont Home Value Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
+    <script src="https://forminit.com/sdk/v1/forminit.js"></script>
+    <style>
+        /* Range slider styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #facc15;
+            cursor: pointer;
+            border: 2px solid #fbbf24;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #facc15;
+            cursor: pointer;
+            border: 2px solid #fbbf24;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #f59e0b;
+        }
+
+        input[type="range"]::-moz-range-thumb:hover {
+            background: #f59e0b;
+        }
+
+        .equity-number {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .renovation-pill {
+            transition: all 0.2s ease;
+        }
+
+        .renovation-pill.active {
+            background-color: #059669;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <div id="app">
+        <!-- Header -->
+        <header class="bg-white shadow-sm sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center gap-4">
+                <img src="logo.png" alt="Homestead Real Estate" class="h-12 sm:h-14">
+                <a href="#form" class="ml-auto bg-yellow-400 hover:bg-yellow-500 text-slate-900 text-xs sm:text-sm font-bold px-4 sm:px-6 py-2 rounded-lg transition-colors cursor-pointer whitespace-nowrap">
+                    Let's Talk
+                </a>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="relative min-h-screen md:h-screen flex items-center justify-center overflow-hidden bg-gradient-to-r from-blue-900 via-blue-800 to-cyan-700">
+            <div class="absolute inset-0 opacity-20" style="background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 800%22><defs><pattern id=%22grid%22 width=%2240%22 height=%2240%22 patternUnits=%22userSpaceOnUse%22><path d=%22M 40 0 L 0 0 0 40%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22/></pattern></defs><rect width=%221200%22 height=%22800%22 fill=%22url(%23grid)%22/></svg>')"></div>
+            
+            <div class="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16 sm:py-20 md:py-0">
+                <div class="mb-6 inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+                    <p class="text-white font-semibold text-sm">You Crushed It.<br>Now Let's See How Much.</p>
+                </div>
+                
+                <h1 class="text-3xl sm:text-5xl md:text-7xl font-black text-white mb-6 leading-snug">
+                    See What Your Longmont Home Equity Is Worth Today
+                </h1>
+                
+                <p class="text-xl md:text-2xl text-blue-50 mb-4 font-light">
+                    If you bought between 2009-2021, you've likely built significant equity. Let's find out how much.
+                </p>
+
+                <p class="text-lg text-blue-100 mb-8">
+                    Enter your address and we'll show you what your home might be worth based on current market conditions.
+                </p>
+
+                <div class="flex justify-center mb-12">
+                    <a href="#calculator" class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold py-4 px-8 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                        Check Your Equity
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Equity Calculator Section -->
+        <section id="calculator" class="bg-gradient-to-br from-slate-50 via-white to-cyan-50 py-12 sm:py-20">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mb-4">Your Equity Calculator</h2>
+                    <p class="text-lg text-slate-600">Enter your address to get started</p>
+                </div>
+
+                <!-- Address Lookup -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                    <label class="block text-sm font-semibold text-slate-900 mb-3">Your Longmont Address</label>
+                    <div class="flex gap-2 mb-4">
+                        <input 
+                            type="text" 
+                            id="addressInput" 
+                            placeholder="e.g., 1345 Lincoln St" 
+                            class="flex-1 px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600 text-slate-900"
+                        >
+                        <button type="button" id="searchButton" class="bg-yellow-400 hover:bg-yellow-500 text-slate-900 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap cursor-pointer">
+                            Show Me My Equity
+                        </button>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4">Don't see your address? No problem—fill in your details below.</p>
+
+                    <!-- Manual Entry Form (Hidden by default) -->
+                    <div id="manualEntryForm" class="hidden border-t-2 border-slate-200 pt-6">
+                        <h3 class="font-semibold text-slate-900 mb-4">Tell Us About Your Home</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">When Did You Buy?</label>
+                                <input 
+                                    type="number" 
+                                    id="manualPurchaseYear" 
+                                    min="1980" 
+                                    max="2024" 
+                                    placeholder="2012" 
+                                    class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Purchase Price</label>
+                                <div class="flex items-center">
+                                    <span class="text-slate-600 mr-2">$</span>
+                                    <input 
+                                        type="number" 
+                                        id="manualPurchasePrice" 
+                                        placeholder="250000" 
+                                        class="flex-1 px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
+                                    >
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Condition When You Bought It</label>
+                                <select id="manualConditionThen" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
+                                    <option value="">Select condition</option>
+                                    <option value="fixer">A true fixer upper!</option>
+                                    <option value="outdated">OK, but definitely outdated</option>
+                                    <option value="upgrades">Some upgrades</option>
+                                    <option value="remodeled">Fully remodeled</option>
+                                    <option value="amazing">Fully remodeled with amazing features and finishes</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Condition of Property Today</label>
+                                <select id="manualConditionNow" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
+                                    <option value="">Select condition</option>
+                                    <option value="nothing">I didn't do anything</option>
+                                    <option value="improvements">A few improvements</option>
+                                    <option value="remodeled">I completely remodeled it</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Tell Me About the Kitchen</label>
+                                <select id="manualKitchen" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
+                                    <option value="">Select kitchen condition</option>
+                                    <option value="barely">Barely functional</option>
+                                    <option value="outdated">Outdated but nice</option>
+                                    <option value="remodeled">Remodeled</option>
+                                    <option value="luxury">Luxury - it's a chef's kitchen!</option>
+                                </select>
+                            </div>
+                            <div id="investmentField" class="hidden md:col-span-2">
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Approximately How Much Did You Invest in Improvements?</label>
+                                <select id="manualInvestment" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
+                                    <option value="">Select investment range</option>
+                                    <option value="under50">Under $50,000</option>
+                                    <option value="50to100">$50,000 - $100,000</option>
+                                    <option value="100to200">$100,000 - $200,000</option>
+                                    <option value="over200">$200,000+</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button onclick="calculateManual()" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-lg transition-colors mb-4">
+                            Calculate Equity
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results Display -->
+                <div id="resultsSection" class="hidden">
+                    <!-- Main Equity Card -->
+                    <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl shadow-2xl p-8 mb-8 border-2 border-emerald-300">
+                        <p class="text-slate-600 text-sm font-medium mb-2">Your Estimated Home Value Today</p>
+                        <div class="flex items-baseline gap-2 mb-6">
+                            <span class="text-6xl sm:text-7xl font-black text-emerald-700 equity-number" id="currentValueDisplay">$0</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-white/80 backdrop-blur rounded-lg p-4">
+                                <p class="text-slate-600 text-sm mb-1">You Paid</p>
+                                <p class="text-2xl font-black text-slate-900" id="purchasePriceDisplay">$0</p>
+                            </div>
+                            <div class="bg-white/80 backdrop-blur rounded-lg p-4">
+                                <p class="text-slate-600 text-sm mb-1">Years Owned</p>
+                                <p class="text-2xl font-black text-slate-900" id="yearsOwnedDisplay">0</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-emerald-600 text-white rounded-xl p-6">
+                            <p class="text-emerald-100 text-sm font-medium mb-1">💰 Your Equity Built</p>
+                            <p class="text-5xl font-black equity-number" id="equityDisplay">$0</p>
+                        </div>
+                    </div>
+
+                    <!-- Renovation Boost (if applicable) -->
+                    <div id="renovationBoostCard" class="hidden bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl shadow-xl p-6 mb-8 border-2 border-amber-300">
+                        <p class="text-slate-700 font-medium mb-2">✨ Renovation Premium Added</p>
+                        <p class="text-4xl font-black text-amber-700" id="renovationBoostDisplay">+$0</p>
+                    </div>
+
+                    <!-- Info Text -->
+                    <div class="bg-blue-50 border-l-4 border-blue-600 rounded-lg p-6 mb-8">
+                        <p class="text-slate-800 font-medium mb-2">📋 What You're Seeing</p>
+                        <p class="text-slate-700 text-sm">This is a professional estimate based on Longmont market appreciation since your purchase date. The actual value may vary based on specific property conditions, market timing, and local factors. Next steps? Let's connect to discuss your options.</p>
+                    </div>
+
+                    <!-- This Doesn't Look Right Button -->
+                    <div class="text-center mb-8">
+                        <button onclick="showFeedbackForm()" class="inline-flex items-center gap-2 bg-slate-200 hover:bg-slate-300 text-slate-900 font-semibold py-3 px-6 rounded-lg transition-colors">
+                            This Doesn't Look Right
+                        </button>
+                    </div>
+
+                    <!-- Feedback Form (Hidden by default) -->
+                    <div id="feedbackFormSection" class="hidden bg-white rounded-2xl shadow-xl p-8 border-2 border-slate-300">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-2">Help Us Get It Right</h3>
+                        <p class="text-slate-600 mb-6">Tell us more about your property so we can provide a more accurate estimate.</p>
+                        
+                        <form id="feedbackForm" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-900 mb-2">Name *</label>
+                                    <input 
+                                        type="text" 
+                                        id="feedbackName" 
+                                        required 
+                                        class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-900 mb-2">Email *</label>
+                                    <input 
+                                        type="email" 
+                                        id="feedbackEmail" 
+                                        required 
+                                        class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-900 mb-2">Phone</label>
+                                    <input 
+                                        type="tel" 
+                                        id="feedbackPhone" 
+                                        class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-900 mb-2">Address *</label>
+                                    <input 
+                                        type="text" 
+                                        id="feedbackAddress" 
+                                        required 
+                                        class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
+                                    >
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-900 mb-2">Tell Me About the Improvements You Have Made to the Property During Your Ownership *</label>
+                                <textarea 
+                                    id="feedbackImprovements" 
+                                    required 
+                                    rows="6" 
+                                    placeholder="Describe any renovations, upgrades, or improvements you've made (e.g., kitchen remodel in 2018, new roof in 2020, etc.)" 
+                                    class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600 resize-none"
+                                ></textarea>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <button 
+                                    type="submit" 
+                                    class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-lg transition-colors"
+                                >
+                                    Submit Feedback
+                                </button>
+                                <button 
+                                    type="button" 
+                                    onclick="hideFeedbackForm()" 
+                                    class="flex-1 bg-slate-300 hover:bg-slate-400 text-slate-900 font-bold py-3 rounded-lg transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Commission Rates Section (from MyLongmontHome) -->
+        <section class="bg-white py-12 sm:py-20 border-t-2 border-slate-100">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mb-4">My Commission Rates</h2>
+                    <p class="text-lg text-slate-600">Competitive rates to keep more of your equity in your pocket</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl shadow-lg p-8 border-2 border-cyan-300">
+                        <div class="mb-6">
+                            <p class="text-slate-600 text-sm font-medium mb-2">Buy & Sell with Me</p>
+                            <p class="text-5xl font-black text-cyan-600">0.9%</p>
+                            <p class="text-slate-700 text-sm mt-2">Combined representation</p>
+                        </div>
+                        <ul class="space-y-3 text-slate-700">
+                            <li class="flex items-start gap-3">
+                                <span class="text-cyan-600 font-bold mt-1">✓</span>
+                                <span>Full service real estate support</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-cyan-600 font-bold mt-1">✓</span>
+                                <span>Professional marketing & showings</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-cyan-600 font-bold mt-1">✓</span>
+                                <span>17 years of Longmont expertise</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-blue-50 to-slate-50 rounded-2xl shadow-lg p-8 border-2 border-blue-300">
+                        <div class="mb-6">
+                            <p class="text-slate-600 text-sm font-medium mb-2">Sell Only</p>
+                            <p class="text-5xl font-black text-blue-600">1.9%</p>
+                            <p class="text-slate-700 text-sm mt-2">If you're selling without buying</p>
+                        </div>
+                        <ul class="space-y-3 text-slate-700">
+                            <li class="flex items-start gap-3">
+                                <span class="text-blue-600 font-bold mt-1">✓</span>
+                                <span>Comprehensive seller representation</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-blue-600 font-bold mt-1">✓</span>
+                                <span>Still below market average rates</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-blue-600 font-bold mt-1">✓</span>
+                                <span>Maximum exposure for your home</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Remove the Friction Section (from MyLongmontHome) -->
+        <section class="bg-gradient-to-br from-slate-900 to-slate-800 py-12 sm:py-20 text-white">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl sm:text-4xl font-black mb-4">Remove the Friction</h2>
+                    <p class="text-xl text-slate-300">Selling your Longmont home doesn't have to be complicated</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
+                        <div class="text-3xl mb-4">🎯</div>
+                        <h3 class="text-xl font-bold mb-3">Local Expert</h3>
+                        <p class="text-slate-200">I know Longmont inside and out. Every neighborhood, every market trend, every buyer profile. That expertise saves you time and money.</p>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
+                        <div class="text-3xl mb-4">💰</div>
+                        <h3 class="text-xl font-bold mb-3">Competitive Rates</h3>
+                        <p class="text-slate-200">Why pay premium commissions? You already paid enough to build equity. Keep more of what you've earned.</p>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
+                        <div class="text-3xl mb-4">📱</div>
+                        <h3 class="text-xl font-bold mb-3">Modern Communication</h3>
+                        <p class="text-slate-200">Text, email, or call—whatever works for you. I'm responsive and keep you informed every step of the way.</p>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
+                        <div class="text-3xl mb-4">🤝</div>
+                        <h3 class="text-xl font-bold mb-3">Full Support</h3>
+                        <p class="text-slate-200">From listing to closing, I handle the details so you can focus on what matters. No surprises, just transparency.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Track Record Section (from MyLongmontHome) -->
+        <section class="bg-gradient-to-br from-cyan-50 via-white to-blue-50 py-12 sm:py-20">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mb-4">My Track Record</h2>
+                    <p class="text-xl text-slate-600">17 years of results in Longmont real estate</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-2xl shadow-lg p-8 text-center border-t-4 border-cyan-600">
+                        <div class="text-5xl font-black text-cyan-600 mb-2">120+</div>
+                        <p class="text-slate-700 font-semibold">Homes Sold</p>
+                        <p class="text-sm text-slate-600 mt-2">Across Longmont and surrounding areas</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg p-8 text-center border-t-4 border-emerald-600">
+                        <div class="text-5xl font-black text-emerald-600 mb-2">17</div>
+                        <p class="text-slate-700 font-semibold">Years of Experience</p>
+                        <p class="text-sm text-slate-600 mt-2">Through market ups and downs</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg p-8 text-center border-t-4 border-blue-600">
+                        <div class="text-5xl font-black text-blue-600 mb-2">⭐⭐⭐⭐⭐</div>
+                        <p class="text-slate-700 font-semibold">5 Star Reviews</p>
+                        <p class="text-sm text-slate-600 mt-2">From clients just like you</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- I'm James Taylor Section (from MyLongmontHome) -->
+        <section class="bg-white py-12 sm:py-20 border-t-2 border-slate-100">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <img src="james-taylor-professional.jpg" alt="James Taylor" class="rounded-2xl shadow-2xl w-full object-cover h-96">
+                    </div>
+                    <div>
+                        <h2 class="text-4xl sm:text-5xl font-black text-slate-900 mb-6">I'm James Taylor</h2>
+                        <p class="text-lg text-slate-700 mb-4">
+                            I grew up in Longmont and came back to serve the community I love. For 17 years, I've helped families and investors navigate the Longmont real estate market with transparency, expertise, and competitive rates.
+                        </p>
+                        <p class="text-lg text-slate-700 mb-6">
+                            I'm not here to maximize my commission—I'm here to maximize your outcome. That's why I offer some of the lowest rates in the area while delivering full-service representation. Your success is my success.
+                        </p>
+                        <div class="bg-gradient-to-r from-cyan-100 to-blue-100 rounded-xl p-6 border-l-4 border-cyan-600">
+                            <p class="text-slate-800 italic font-medium">
+                                "Whether you're selling the home you've built equity in, or buying your next place, I'm ready to help you make the right move."
+                            </p>
+                            <p class="text-slate-700 font-bold mt-3">— James Taylor</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Let's Make a Move Form Section (from MyLongmontHome) -->
+        <section id="form" class="bg-gradient-to-br from-blue-900 via-cyan-800 to-blue-800 py-12 sm:py-20 text-white">
+            <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl sm:text-4xl font-black mb-4">Let's Make a Move</h2>
+                    <p class="text-xl text-blue-100">Tell me about your situation and let's explore your options</p>
+                </div>
+
+                <div class="bg-white/95 backdrop-blur rounded-2xl shadow-2xl p-8 text-slate-900">
+                    <form id="contactForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-900 mb-2">First Name *</label>
+                                <input 
+                                    type="text" 
+                                    name="firstName" 
+                                    required 
+                                    class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-900 mb-2">Last Name *</label>
+                                <input 
+                                    type="text" 
+                                    name="lastName" 
+                                    required 
+                                    class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-900 mb-2">Email *</label>
+                                <input 
+                                    type="email" 
+                                    name="email" 
+                                    required 
+                                    class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-900 mb-2">Phone *</label>
+                                <input 
+                                    type="tel" 
+                                    name="phone" 
+                                    required 
+                                    class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
+                                >
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">What's Your Timeline?</label>
+                            <select name="timeline" class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
+                                <option value="">Select a timeframe</option>
+                                <option value="immediately">As soon as possible</option>
+                                <option value="3months">Next 3 months</option>
+                                <option value="6months">6 months</option>
+                                <option value="1year">Next year</option>
+                                <option value="exploring">Just exploring</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">How Did You Hear About This?</label>
+                            <select name="source" class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
+                                <option value="">Select one</option>
+                                <option value="postcard">Postcard from James</option>
+                                <option value="facebook">Facebook Ad</option>
+                                <option value="referral">Friend or Family Referral</option>
+                                <option value="search">Google Search</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-900 mb-2">Tell Me About Your Situation</label>
+                            <textarea 
+                                name="message" 
+                                rows="5" 
+                                placeholder="Are you thinking about selling? Want a home valuation? Let me know what brought you here..." 
+                                class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600 resize-none"
+                            ></textarea>
+                        </div>
+
+                        <button 
+                            type="submit" 
+                            class="w-full bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black text-lg py-4 rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                        >
+                            Send My Information
+                        </button>
+
+                        <p class="text-xs text-slate-600 text-center">
+                            I'll review your information and follow up within 24 hours. Your details are private and secure.
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-slate-900 text-white py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <p class="text-slate-400 mb-2">
+                    © 2026 Homestead Real Estate, LLC. All rights reserved.
+                </p>
+                <p class="text-slate-500 text-sm">
+                    Longmont, Colorado | 17 years of local real estate expertise
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Property Database & Calculation Logic -->
+    <script>
+        const propertyDatabase = [
+            { address: "900 Mountain View Ave #210", purchasePrice: 0, purchaseDate: "2011", sqft: 896, beds: 2, baths: 2, owner: "JAMES A SISSENSTEIN" },
+            { address: "831 17th Ave #53", purchasePrice: 0, purchaseDate: "1966", sqft: 624, beds: 2, baths: 1, owner: "KEVIN L CHRISTY" },
+            { address: "900 Mountain View Ave #117", purchasePrice: 16500, purchaseDate: "2009", sqft: 840, beds: 2, baths: 2, owner: "ROBERT D WILKINS" },
+            { address: "951 17th Ave #63", purchasePrice: 13000, purchaseDate: "2010", sqft: 672, beds: 2, baths: 2, owner: "CARL B ARNOLD" },
+            { address: "951 17th Ave #64", purchasePrice: 0, purchaseDate: "1979", sqft: 728, beds: 2, baths: 1, owner: "JIMMY D FRINGER" },
+            { address: "831 17th Ave #5", purchasePrice: 7000, purchaseDate: "1998", sqft: 992, beds: 2, baths: 2, owner: "HAROLD D WILCOX" },
+            { address: "951 17th Ave #93", purchasePrice: 46000, purchaseDate: "2010", sqft: 1565, beds: 3, baths: 2, owner: "MICHAEL EUGENE & KATHARINE DIANE STRONG" },
+            { address: "951 17th Ave #62", purchasePrice: 29000, purchaseDate: "2008", sqft: 896, beds: 2, baths: 2, owner: "WILLIAM C TURK" },
+            { address: "1136 Aspen St", purchasePrice: 208000, purchaseDate: "2014", sqft: 1296, beds: 3, baths: 2, owner: "REGINALD DALE ANDERSEN" },
+            { address: "1142 Bross St", purchasePrice: 180000, purchaseDate: "2012", sqft: 1386, beds: 2, baths: 1, owner: "RONALD E CROWELL" },
+            { address: "1424 Spencer St", purchasePrice: 199000, purchaseDate: "2012", sqft: 1670, beds: 3, baths: 2, owner: "FRANKLIN A COPELAND" },
+            { address: "1136 Judson St", purchasePrice: 215000, purchaseDate: "2009", sqft: 1536, beds: 4, baths: 2, owner: "JOE & KIMBERLY A KNIGHT" },
+            { address: "1432 Pratt St", purchasePrice: 175000, purchaseDate: "2010", sqft: 1370, beds: 3, baths: 2, owner: "CHARLES M HICKMAN" },
+            { address: "1130 Aspen St", purchasePrice: 155000, purchaseDate: "2011", sqft: 996, beds: 2, baths: 1, owner: "MARILYN HAMPTON" },
+            { address: "1239 Grant St", purchasePrice: 182200, purchaseDate: "2013", sqft: 1358, beds: 3, baths: 1, owner: "EIGHT 888 LLC" },
+            { address: "1345 Lincoln St", purchasePrice: 195000, purchaseDate: "2011", sqft: 1064, beds: 3, baths: 2, owner: "MICHAEL STEFAN VERNET" }
+        ];
+
+        let currentCalculation = null;
+        let selectedRenovations = [];
+
+        function getAppreciationRate(year) {
+            if (year >= 2009 && year <= 2013) return 0.04;    // 4%
+            if (year >= 2014 && year <= 2019) return 0.08;    // 8%
+            if (year === 2020) return 0.15;                   // 15%
+            if (year === 2021) return 0.07;                   // 7%
+            if (year === 2022) return 0.05;                   // 5%
+            if (year === 2023) return -0.03;                  // -3%
+            if (year === 2024) return -0.02;                  // -2%
+            if (year === 2025) return 0.00;                   // 0%
+            if (year === 2026) return 0.00;                   // 0%
+            return 0.04;
+        }
+
+        function getConditionMultiplier(conditionThen, conditionNow, kitchen, investmentAmount = null) {
+            let multiplier = 1.0;
+
+            // Condition improvement multiplier (less conservative)
+            const conditionKey = `${conditionThen}-${conditionNow}`;
+            const conditionMultipliers = {
+                'fixer-nothing': 0.92,        // -8% (depreciation)
+                'fixer-improvements': 1.08,   // +8%
+                'fixer-remodeled': 1.14,      // +14%
+                'outdated-nothing': 0.96,     // -4%
+                'outdated-improvements': 1.09, // +9%
+                'outdated-remodeled': 1.15,   // +15%
+                'upgrades-nothing': 1.02,     // +2%
+                'upgrades-improvements': 1.07, // +7%
+                'upgrades-remodeled': 1.12,   // +12%
+                'remodeled-nothing': 1.04,    // +4%
+                'remodeled-remodeled': 1.08,  // +8%
+                'amazing-nothing': 1.05,      // +5%
+                'amazing-remodeled': 1.07     // +7%
+            };
+
+            multiplier *= conditionMultipliers[conditionKey] || 1.0;
+
+            // Kitchen bonus multiplier
+            const kitchenMultipliers = {
+                'barely': 0.94,      // -6%
+                'outdated': 1.03,    // +3%
+                'remodeled': 1.05,   // +5%
+                'luxury': 1.08       // +8%
+            };
+
+            multiplier *= kitchenMultipliers[kitchen] || 1.0;
+
+            // Investment amount multiplier (only if improvements were made)
+            if (conditionNow === 'improvements' || conditionNow === 'remodeled') {
+                const investmentMultipliers = {
+                    'under50': 0.6,      // 60% of condition multiplier benefit
+                    '50to100': 0.85,     // 85% of condition multiplier benefit
+                    '100to200': 1.0,     // 100% of condition multiplier benefit
+                    'over200': 1.2       // 120% of condition multiplier benefit
+                };
+
+                if (investmentAmount && investmentMultipliers[investmentAmount]) {
+                    // Blend the investment multiplier with existing multiplier
+                    const investmentFactor = investmentMultipliers[investmentAmount];
+                    multiplier = 1 + ((multiplier - 1) * investmentFactor);
+                }
+            }
+
+            return multiplier;
+        }
+
+        function calculateEquity(purchasePrice, purchaseDate, renovations = [], conditionThen = null, conditionNow = null, kitchen = null, investmentAmount = null) {
+            const year = parseInt(purchaseDate);
+            const currentYear = 2026;
+            const yearsOwned = currentYear - year;
+
+            let tempValue = purchasePrice;
+            for (let i = 0; i < yearsOwned; i++) {
+                const yearOfOwnership = year + i;
+                const rate = getAppreciationRate(yearOfOwnership);
+                tempValue *= (1 + rate);
+            }
+            let currentValue = tempValue;
+
+            // Apply condition-based adjustments
+            if (conditionThen && conditionNow && kitchen) {
+                const conditionMultiplier = getConditionMultiplier(conditionThen, conditionNow, kitchen, investmentAmount);
+                currentValue *= conditionMultiplier;
+            }
+
+            let renovationBoost = 0;
+            renovations.forEach(reno => {
+                if (reno === 'kitchen') renovationBoost += currentValue * 0.045;
+                if (reno === 'roof') renovationBoost += currentValue * 0.025;
+                if (reno === 'hvac') renovationBoost += currentValue * 0.02;
+                if (reno === 'masterbath') renovationBoost += currentValue * 0.03;
+                if (reno === 'bathroom') renovationBoost += currentValue * 0.025;
+                if (reno === 'flooring') renovationBoost += currentValue * 0.035;
+                if (reno === 'windows') renovationBoost += currentValue * 0.02;
+            });
+
+            currentValue += renovationBoost;
+            const equity = currentValue - purchasePrice;
+
+            return {
+                originalPrice: purchasePrice,
+                currentValue: Math.round(currentValue),
+                equity: Math.round(equity),
+                yearsOwned: yearsOwned,
+                renovationBoost: Math.round(renovationBoost)
+            };
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            }).format(value);
+        }
+
+        // Address search handler
+        function initializeAddressSearch() {
+            const searchBtn = document.getElementById('searchButton');
+            const addressInput = document.getElementById('addressInput');
+            
+            if (searchBtn && addressInput) {
+                searchBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    searchAddress();
+                });
+                
+                addressInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        searchAddress();
+                    }
+                });
+            }
+        }
+
+        function searchAddress() {
+            const address = document.getElementById('addressInput').value.trim();
+            console.log('Search clicked, address:', address);
+            
+            if (!address) {
+                alert('Please enter an address');
+                return;
+            }
+
+            const property = propertyDatabase.find(p => {
+                const match = p.address.toLowerCase().includes(address.toLowerCase()) && p.purchasePrice > 0;
+                console.log('Checking:', p.address, 'Match:', match);
+                return match;
+            });
+
+            console.log('Property found:', property);
+
+            if (property) {
+                currentCalculation = calculateEquity(property.purchasePrice, property.purchaseDate, selectedRenovations, 'upgrades', 'improvements', 'outdated', null);
+                displayResults(property);
+            } else {
+                alert('Address not found in our database. Please fill in your details below.');
+                document.getElementById('manualEntryForm').classList.remove('hidden');
+            }
+        }
+
+        function calculateManual() {
+            const year = document.getElementById('manualPurchaseYear').value;
+            const price = parseFloat(document.getElementById('manualPurchasePrice').value);
+            const conditionThen = document.getElementById('manualConditionThen').value;
+            const conditionNow = document.getElementById('manualConditionNow').value;
+            const kitchen = document.getElementById('manualKitchen').value;
+            const investment = document.getElementById('manualInvestment').value;
+
+            if (!year || !price || !conditionThen || !conditionNow || !kitchen) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            currentCalculation = calculateEquity(price, year, selectedRenovations, conditionThen, conditionNow, kitchen, investment || null);
+            displayResults(null, { purchasePrice: price, purchaseDate: year });
+        }
+
+        function displayResults(property, manual = null) {
+            const data = currentCalculation;
+            
+            document.getElementById('purchasePriceDisplay').textContent = formatCurrency(data.originalPrice);
+            document.getElementById('yearsOwnedDisplay').textContent = data.yearsOwned + ' years';
+            document.getElementById('currentValueDisplay').textContent = formatCurrency(data.currentValue);
+            document.getElementById('equityDisplay').textContent = formatCurrency(data.equity);
+
+            if (data.renovationBoost > 0) {
+                document.getElementById('renovationBoostDisplay').textContent = '+' + formatCurrency(data.renovationBoost);
+                document.getElementById('renovationBoostCard').classList.remove('hidden');
+            } else {
+                document.getElementById('renovationBoostCard').classList.add('hidden');
+            }
+
+            document.getElementById('manualEntryForm').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+
+            // Scroll to results
+            setTimeout(() => {
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+            }, 200);
+        }
+
+        function toggleRenovation(type) {
+            const button = event.target.closest('button');
+            const index = selectedRenovations.indexOf(type);
+
+            if (index > -1) {
+                selectedRenovations.splice(index, 1);
+                button.classList.remove('active');
+            } else {
+                selectedRenovations.push(type);
+                button.classList.add('active');
+            }
+        }
+
+        function recalculateWithRenovations() {
+            if (currentCalculation) {
+                const conditionThen = document.getElementById('manualConditionThen').value;
+                const conditionNow = document.getElementById('manualConditionNow').value;
+                const kitchen = document.getElementById('manualKitchen').value;
+                const investment = document.getElementById('manualInvestment').value;
+
+                currentCalculation = calculateEquity(
+                    currentCalculation.originalPrice, 
+                    (2026 - currentCalculation.yearsOwned).toString(),
+                    selectedRenovations,
+                    conditionThen || null,
+                    conditionNow || null,
+                    kitchen || null,
+                    investment || null
+                );
+                
+                document.getElementById('currentValueDisplay').textContent = formatCurrency(currentCalculation.currentValue);
+                document.getElementById('equityDisplay').textContent = formatCurrency(currentCalculation.equity);
+
+                if (currentCalculation.renovationBoost > 0) {
+                    document.getElementById('renovationBoostDisplay').textContent = '+' + formatCurrency(currentCalculation.renovationBoost);
+                    document.getElementById('renovationBoostCard').classList.remove('hidden');
+                } else {
+                    document.getElementById('renovationBoostCard').classList.add('hidden');
+                }
+            }
+        }
+
+        // Form submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                firstName: document.querySelector('input[name="firstName"]').value,
+                lastName: document.querySelector('input[name="lastName"]').value,
+                email: document.querySelector('input[name="email"]').value,
+                phone: document.querySelector('input[name="phone"]').value,
+                timeline: document.querySelector('select[name="timeline"]').value,
+                source: document.querySelector('select[name="source"]').value,
+                message: document.querySelector('textarea[name="message"]').value,
+                equityCalculatorUsed: currentCalculation ? true : false,
+                estimatedEquity: currentCalculation ? currentCalculation.equity : null,
+                propertyConditionThen: document.getElementById('manualConditionThen') ? document.getElementById('manualConditionThen').value : null,
+                propertyConditionNow: document.getElementById('manualConditionNow') ? document.getElementById('manualConditionNow').value : null,
+                kitchenCondition: document.getElementById('manualKitchen') ? document.getElementById('manualKitchen').value : null
+            };
+
+            // For now, log to console. In production, send to backend/CRM
+            console.log('Form submitted:', formData);
+
+            // Show success message
+            alert('Thanks for reaching out! I\'ll be in touch within 24 hours.');
+            
+            // Reset form
+            document.getElementById('contactForm').reset();
+        });
+
+        function showFeedbackForm() {
+            document.getElementById('feedbackFormSection').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('feedbackFormSection').scrollIntoView({ behavior: 'smooth' });
+            }, 200);
+        }
+
+        function hideFeedbackForm() {
+            document.getElementById('feedbackFormSection').classList.add('hidden');
+        }
+
+        // Feedback form submission
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const feedbackData = {
+                name: document.getElementById('feedbackName').value,
+                email: document.getElementById('feedbackEmail').value,
+                phone: document.getElementById('feedbackPhone').value,
+                address: document.getElementById('feedbackAddress').value,
+                improvements: document.getElementById('feedbackImprovements').value,
+                estimatedValue: currentCalculation ? currentCalculation.currentValue : null,
+                originalEstimate: currentCalculation ? currentCalculation.originalPrice : null,
+                timestamp: new Date().toISOString()
+            };
+
+            // Log to console for now
+            console.log('Feedback submitted:', feedbackData);
+
+            // Show success message
+            alert('Thanks for the feedback! I will review this and follow up with you soon.');
+            
+            // Reset form and hide
+            document.getElementById('feedbackForm').reset();
+            document.getElementById('feedbackFormSection').classList.add('hidden');
+        });
+
+        // Show investment field if improvements were made
+        document.getElementById('manualConditionNow').addEventListener('change', function(e) {
+            const investmentField = document.getElementById('investmentField');
+            if (this.value === 'improvements' || this.value === 'remodeled') {
+                investmentField.classList.remove('hidden');
+            } else {
+                investmentField.classList.add('hidden');
+                document.getElementById('manualInvestment').value = '';
+            }
+        });
+
+        // Allow Enter key on address search
+        document.getElementById('addressInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchAddress();
+            }
+        });
+
+        // Initialize address search on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchBtn = document.getElementById('searchButton');
+                if (searchBtn) {
+                    searchBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        searchAddress();
+                    });
+                }
+                initializeAddressSearch();
+            });
+        } else {
+            const searchBtn = document.getElementById('searchButton');
+            if (searchBtn) {
+                searchBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    searchAddress();
+                });
+            }
+            initializeAddressSearch();
+        }
+    </script>
+</body>
+</html>
