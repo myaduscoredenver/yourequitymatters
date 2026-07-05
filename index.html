@@ -164,6 +164,15 @@
                                 </div>
                             </div>
                             <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Approx. Square Footage (not including basement) <span class="text-slate-400 font-normal">(optional, improves accuracy)</span></label>
+                                <input 
+                                    type="number" 
+                                    id="manualSqft" 
+                                    placeholder="1500" 
+                                    class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
+                                >
+                            </div>
+                            <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-2">Condition When You Bought It</label>
                                 <select id="manualConditionThen" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
                                     <option value="">Select condition</option>
@@ -197,8 +206,10 @@
                                 <label class="block text-sm font-medium text-slate-700 mb-2">Approximately How Much Did You Invest in Improvements?</label>
                                 <select id="manualInvestment" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
                                     <option value="">Select investment range</option>
-                                    <option value="under50">Under $50,000</option>
-                                    <option value="50to100">$50,000 - $100,000</option>
+                                    <option value="10to25">$10,000 - $25,000</option>
+                                    <option value="25to50">$25,000 - $50,000</option>
+                                    <option value="50to75">$50,000 - $75,000</option>
+                                    <option value="75to100">$75,000 - $100,000</option>
                                     <option value="100to200">$100,000 - $200,000</option>
                                     <option value="over200">$200,000+</option>
                                 </select>
@@ -216,9 +227,10 @@
                     <!-- Main Equity Card -->
                     <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl shadow-2xl p-8 mb-8 border-2 border-emerald-300">
                         <p class="text-slate-600 text-sm font-medium mb-2">Your Estimated Home Value Today</p>
-                        <div class="flex items-baseline gap-2 mb-6">
+                        <div class="flex items-baseline gap-2 mb-2">
                             <span class="text-6xl sm:text-7xl font-black text-emerald-700 equity-number" id="currentValueDisplay">$0</span>
                         </div>
+                        <p class="text-sm text-slate-500 mb-6" id="zoneInfoDisplay"></p>
 
                         <div class="grid grid-cols-2 gap-4 mb-6">
                             <div class="bg-white/80 backdrop-blur rounded-lg p-4">
@@ -597,87 +609,171 @@
         </footer>
     </div>
 
-    <!-- Property Database & Calculation Logic -->
+    <!-- Calculation Logic -->
     <script>
-        const propertyDatabase = [
-            { address: "900 Mountain View Ave #210", purchasePrice: 0, purchaseDate: "2011", sqft: 896, beds: 2, baths: 2, owner: "JAMES A SISSENSTEIN" },
-            { address: "831 17th Ave #53", purchasePrice: 0, purchaseDate: "1966", sqft: 624, beds: 2, baths: 1, owner: "KEVIN L CHRISTY" },
-            { address: "900 Mountain View Ave #117", purchasePrice: 16500, purchaseDate: "2009", sqft: 840, beds: 2, baths: 2, owner: "ROBERT D WILKINS" },
-            { address: "951 17th Ave #63", purchasePrice: 13000, purchaseDate: "2010", sqft: 672, beds: 2, baths: 2, owner: "CARL B ARNOLD" },
-            { address: "951 17th Ave #64", purchasePrice: 0, purchaseDate: "1979", sqft: 728, beds: 2, baths: 1, owner: "JIMMY D FRINGER" },
-            { address: "831 17th Ave #5", purchasePrice: 7000, purchaseDate: "1998", sqft: 992, beds: 2, baths: 2, owner: "HAROLD D WILCOX" },
-            { address: "951 17th Ave #93", purchasePrice: 46000, purchaseDate: "2010", sqft: 1565, beds: 3, baths: 2, owner: "MICHAEL EUGENE & KATHARINE DIANE STRONG" },
-            { address: "951 17th Ave #62", purchasePrice: 29000, purchaseDate: "2008", sqft: 896, beds: 2, baths: 2, owner: "WILLIAM C TURK" },
-            { address: "1136 Aspen St", purchasePrice: 208000, purchaseDate: "2014", sqft: 1296, beds: 3, baths: 2, owner: "REGINALD DALE ANDERSEN" },
-            { address: "1142 Bross St", purchasePrice: 180000, purchaseDate: "2012", sqft: 1386, beds: 2, baths: 1, owner: "RONALD E CROWELL" },
-            { address: "1424 Spencer St", purchasePrice: 199000, purchaseDate: "2012", sqft: 1670, beds: 3, baths: 2, owner: "FRANKLIN A COPELAND" },
-            { address: "1136 Judson St", purchasePrice: 215000, purchaseDate: "2009", sqft: 1536, beds: 4, baths: 2, owner: "JOE & KIMBERLY A KNIGHT" },
-            { address: "1432 Pratt St", purchasePrice: 175000, purchaseDate: "2010", sqft: 1370, beds: 3, baths: 2, owner: "CHARLES M HICKMAN" },
-            { address: "1130 Aspen St", purchasePrice: 155000, purchaseDate: "2011", sqft: 996, beds: 2, baths: 1, owner: "MARILYN HAMPTON" },
-            { address: "1239 Grant St", purchasePrice: 182200, purchaseDate: "2013", sqft: 1358, beds: 3, baths: 1, owner: "EIGHT 888 LLC" },
-            { address: "1345 Lincoln St", purchasePrice: 195000, purchaseDate: "2011", sqft: 1064, beds: 3, baths: 2, owner: "MICHAEL STEFAN VERNET" }
-        ];
+        // ============================================================
+        // ZONE DATA — calibrated from actual Longmont single-family
+        // sold comps (trailing ~30 days, single-family only).
+        // No addresses, owners, or prices are stored here — only
+        // street names mapped to broad zones, and zone-level
+        // aggregate multipliers. Multipliers are dampened (regressed
+        // toward 1.0) and capped at +/-15% since sample sizes per
+        // zone are still modest (N=6-21). As more sales data is
+        // added over time, these should be recalibrated and the
+        // dampening reduced.
+        // ============================================================
+        const ZONES = {
+            oldtown: { name: "Old Town / Central Longmont", multiplier: 1.15, n: 21, medianPpsf: 376 },
+            north:   { name: "North Longmont / Near Niwot",  multiplier: 1.03, n: 13, medianPpsf: 267 },
+            ne:      { name: "Northeast Longmont",           multiplier: 1.04, n: 6,  medianPpsf: 273 },
+            se:      { name: "Southeast Longmont (Creekside/Fox Creek)", multiplier: 0.98, n: 15, medianPpsf: 237 },
+            sw:      { name: "Southwest Longmont (Golf Course Communities)", multiplier: 0.94, n: 19, medianPpsf: 203 },
+            rural:   { name: "Rural / Longmont Fringe",      multiplier: 1.13, n: 1,  medianPpsf: 338 }
+        };
+        const CITY_MEDIAN_PPSF = 248;
+
+        // The zone $/sqft figures above were calibrated against MLS
+        // "Total SqFt" — which for most Longmont single-story homes
+        // includes finished basement space. Since the calculator now
+        // asks for above-grade square footage only (basements vary
+        // too much in finish quality/value to ask a homeowner to
+        // self-report accurately), we apply an uplift factor here:
+        // above-grade sqft is a smaller number than total sqft, and
+        // that remaining space commands a higher price per square
+        // foot than blended total-sqft pricing would suggest. 1.20 is
+        // a standard industry rule of thumb for finished-basement
+        // markets (below-grade space typically appraises around
+        // 60-70% of above-grade $/sqft). Revisit this once we have
+        // above/below-grade splits for a full comp set.
+        const ABOVE_GRADE_PPSF_ADJUSTMENT = 1.20;
+
+        // Street name (no house number/unit) -> zone code.
+        // Built from actual sold comps. Streets not listed here fall
+        // back to city-wide averages rather than a guessed zone.
+        const STREET_ZONE_MAP = {
+            "24TH AVE": "ne", "6TH AVE": "oldtown", "ALBION LN": "north", "AMERICANA RD": "sw",
+            "ASPEN ST": "oldtown", "ATWOOD ST": "oldtown", "BAYLOR DR": "north", "BLUEBIRD DR": "se",
+            "BOWEN ST": "oldtown", "BROOKSIDE DR": "se", "BROSS ST": "oldtown", "CARRIAGE DR": "se",
+            "CLOVER BASIN DR": "sw", "CREEKSIDE DR": "se", "DEERWOOD DR": "se", "DOROTHY CIR": "sw",
+            "E 4TH AVE": "oldtown", "E COUNTY LINE RD": "rural", "EMERY ST": "oldtown", "FALCON DR": "se",
+            "FOUR LEAF DR": "north", "GAY ST": "oldtown", "GILLETTE CT": "ne", "GLENARBOR CIR": "sw",
+            "GOLDEN BEAR DR": "sw", "GOSS DR": "north", "GRANT ST": "oldtown", "HALLET PEAK DR": "sw",
+            "HIGHLAND DR": "ne", "HUBBARD DR": "north", "JUDSON ST": "oldtown", "JUNIPER ST": "oldtown",
+            "KIMBARK ST": "oldtown", "LAMPLIGHTER DR": "oldtown", "LANYON DR": "north", "LONGS PEAK AVE": "oldtown",
+            "MAXWELL AVE": "sw", "MERIDETH LN": "oldtown", "MONARCH DR": "se", "MONTGOMERY CIR": "sw",
+            "NORTHWESTERN RD": "north", "ONYX CIR": "north", "PHEASANT DR": "se", "PLACER AVE": "ne",
+            "PORTOFINO DR": "sw", "PRAIRIE SONG PL": "sw", "PROVENANCE ST": "sw", "RIDER RIDGE DR": "se",
+            "RIDGEVIEW DR": "se", "ROCKSPRAY CT": "se", "S GAY DR": "north", "SHERMAN ST": "oldtown",
+            "SIERRA AVE": "se", "SPENCER ST": "oldtown", "SPRINGS PL": "se", "SUGAR BEET CIR": "sw",
+            "SUNFLOWER CIR": "sw", "SUNSET DR": "ne", "SUNSET ST": "oldtown", "TURIN DR": "sw",
+            "TWIN PEAKS CIR": "north", "UNIVERSITY CIR": "north", "VIVIAN ST": "oldtown", "WHISTLER DR": "ne",
+            "WHITEHALL DR": "sw", "WILKERSON WAY": "oldtown", "WILLOW CREEK CIR": "north"
+        };
+
+        // Parse a free-text address like "1345 Lincoln St" into a
+        // normalized street name for zone lookup. Never fails hard —
+        // if we can't confidently match, we just return null and the
+        // calculator falls back to city-wide averages.
+        function detectZone(addressText) {
+            if (!addressText) return null;
+            const cleaned = addressText.trim().toUpperCase().replace(/[.,#]/g, ' ').replace(/\s+/g, ' ');
+            const parts = cleaned.split(' ');
+            // Drop the leading house number if present
+            if (parts.length > 1 && /^\d+$/.test(parts[0])) {
+                parts.shift();
+            }
+            const streetName = parts.join(' ').trim();
+            if (STREET_ZONE_MAP[streetName]) {
+                return STREET_ZONE_MAP[streetName];
+            }
+            // Try without the suffix (ST/AVE/DR/CIR/etc) in case of minor mismatches
+            const withoutSuffix = parts.slice(0, -1).join(' ').trim();
+            for (const key in STREET_ZONE_MAP) {
+                if (key.startsWith(withoutSuffix) && withoutSuffix.length > 2) {
+                    return STREET_ZONE_MAP[key];
+                }
+            }
+            return null;
+        }
 
         let currentCalculation = null;
         let selectedRenovations = [];
+        let detectedZoneCode = null;
 
+        // Year-by-year appreciation curve for Longmont, single-family,
+        // calibrated against real May-sold-comp medians ($/sqft, Total
+        // SqFt basis) for 2008, 2010, 2012, 2014, 2016, 2018, 2020,
+        // 2021, 2022, 2023, 2024, 2025, and the existing 400-comp 2026
+        // anchor. Two-year gaps (e.g. 2008-2010) are converted to a
+        // flat annual rate (CAGR) and applied to both years in the gap.
+        //
+        // 2022-2025 note: a same-year-mix sanity check (restricting to
+        // comps under 2,500 total sqft) showed this span is close to
+        // FLAT in like-for-like terms (~$310-317/sqft throughout),
+        // even though the raw full-sample medians swing wildly
+        // (+31.5%, -17.2%, +14.9%, -13.4%). That swing looks driven
+        // mostly by which size of home happened to sell each May, not
+        // real price movement. So: 2022 keeps its real, well-supported
+        // spike (COVID-era peak, right before mortgage rates jumped),
+        // but 2023-2025 are smoothed to a single 3-year CAGR rather
+        // than chasing each noisy full-sample swing individually. 2026
+        // reconnects to the actual 400-comp calibrated anchor.
         function getAppreciationRate(year) {
-            if (year >= 2009 && year <= 2013) return 0.04;    // 4%
-            if (year >= 2014 && year <= 2019) return 0.08;    // 8%
-            if (year === 2020) return 0.15;                   // 15%
-            if (year === 2021) return 0.07;                   // 7%
-            if (year === 2022) return 0.05;                   // 5%
-            if (year === 2023) return -0.03;                  // -3%
-            if (year === 2024) return -0.02;                  // -2%
-            if (year === 2025) return 0.00;                   // 0%
-            if (year === 2026) return 0.00;                   // 0%
-            return 0.04;
+            if (year >= 2009 && year <= 2010) return -0.0461; // 2008->2010 CAGR: correction after the mid-2000s peak
+            if (year >= 2011 && year <= 2012) return 0.0253;  // 2010->2012 CAGR: recovery underway
+            if (year >= 2013 && year <= 2014) return 0.0734;  // 2012->2014 CAGR
+            if (year >= 2015 && year <= 2016) return 0.1839;  // 2014->2016 CAGR: boom years
+            if (year >= 2017 && year <= 2018) return 0.1114;  // 2016->2018 CAGR
+            if (year >= 2019 && year <= 2020) return -0.0572; // 2018->2020 CAGR: real pre-frenzy dip, not the +15% previously assumed
+            if (year === 2021) return 0.2342;                 // 2020->2021: COVID-boom recovery jump
+            if (year === 2022) return 0.3155;                 // 2021->2022: real COVID-era price peak (right before rates rose)
+            if (year >= 2023 && year <= 2025) return -0.0624; // 2022->2025 smoothed CAGR (see mix-noise note above)
+            if (year === 2026) return 0.0703;                 // 2025->2026: reconnects to calibrated 400-comp anchor
+            return 0.0506; // fallback outside 2009-2026: long-run 2008-2026 CAGR
         }
 
         function getConditionMultiplier(conditionThen, conditionNow, kitchen, investmentAmount = null) {
             let multiplier = 1.0;
 
-            // Condition improvement multiplier (less conservative)
             const conditionKey = `${conditionThen}-${conditionNow}`;
             const conditionMultipliers = {
-                'fixer-nothing': 0.92,        // -8% (depreciation)
-                'fixer-improvements': 1.08,   // +8%
-                'fixer-remodeled': 1.14,      // +14%
-                'outdated-nothing': 0.96,     // -4%
-                'outdated-improvements': 1.09, // +9%
-                'outdated-remodeled': 1.15,   // +15%
-                'upgrades-nothing': 1.02,     // +2%
-                'upgrades-improvements': 1.07, // +7%
-                'upgrades-remodeled': 1.12,   // +12%
-                'remodeled-nothing': 1.04,    // +4%
-                'remodeled-remodeled': 1.08,  // +8%
-                'amazing-nothing': 1.05,      // +5%
-                'amazing-remodeled': 1.07     // +7%
+                'fixer-nothing': 0.92,
+                'fixer-improvements': 1.08,
+                'fixer-remodeled': 1.14,
+                'outdated-nothing': 0.96,
+                'outdated-improvements': 1.09,
+                'outdated-remodeled': 1.15,
+                'upgrades-nothing': 1.02,
+                'upgrades-improvements': 1.07,
+                'upgrades-remodeled': 1.12,
+                'remodeled-nothing': 1.04,
+                'remodeled-remodeled': 1.08,
+                'amazing-nothing': 1.05,
+                'amazing-remodeled': 1.07
             };
 
             multiplier *= conditionMultipliers[conditionKey] || 1.0;
 
-            // Kitchen bonus multiplier
             const kitchenMultipliers = {
-                'barely': 0.94,      // -6%
-                'outdated': 1.03,    // +3%
-                'remodeled': 1.05,   // +5%
-                'luxury': 1.08       // +8%
+                'barely': 0.94,
+                'outdated': 1.03,
+                'remodeled': 1.05,
+                'luxury': 1.08
             };
 
             multiplier *= kitchenMultipliers[kitchen] || 1.0;
 
-            // Investment amount multiplier (only if improvements were made)
             if (conditionNow === 'improvements' || conditionNow === 'remodeled') {
                 const investmentMultipliers = {
-                    'under50': 0.6,      // 60% of condition multiplier benefit
-                    '50to100': 0.85,     // 85% of condition multiplier benefit
-                    '100to200': 1.0,     // 100% of condition multiplier benefit
-                    'over200': 1.2       // 120% of condition multiplier benefit
+                    '10to25': 0.45,
+                    '25to50': 0.65,
+                    '50to75': 0.80,
+                    '75to100': 0.92,
+                    '100to200': 1.0,
+                    'over200': 1.2
                 };
 
                 if (investmentAmount && investmentMultipliers[investmentAmount]) {
-                    // Blend the investment multiplier with existing multiplier
                     const investmentFactor = investmentMultipliers[investmentAmount];
                     multiplier = 1 + ((multiplier - 1) * investmentFactor);
                 }
@@ -686,7 +782,7 @@
             return multiplier;
         }
 
-        function calculateEquity(purchasePrice, purchaseDate, renovations = [], conditionThen = null, conditionNow = null, kitchen = null, investmentAmount = null) {
+        function calculateEquity(purchasePrice, purchaseDate, renovations = [], conditionThen = null, conditionNow = null, kitchen = null, investmentAmount = null, zoneCode = null, sqft = null) {
             const year = parseInt(purchaseDate);
             const currentYear = 2026;
             const yearsOwned = currentYear - year;
@@ -699,7 +795,6 @@
             }
             let currentValue = tempValue;
 
-            // Apply condition-based adjustments
             if (conditionThen && conditionNow && kitchen) {
                 const conditionMultiplier = getConditionMultiplier(conditionThen, conditionNow, kitchen, investmentAmount);
                 currentValue *= conditionMultiplier;
@@ -717,6 +812,28 @@
             });
 
             currentValue += renovationBoost;
+
+            // Apply zone (location) adjustment — a modest, dampened
+            // multiplier reflecting how this part of Longmont has
+            // traded relative to the city median in recent sales.
+            let zoneApplied = null;
+            if (zoneCode && ZONES[zoneCode]) {
+                currentValue *= ZONES[zoneCode].multiplier;
+                zoneApplied = ZONES[zoneCode];
+            }
+
+            // Optional comp cross-check: if the user gave us square
+            // footage and we have a zone, show what recent comps in
+            // that zone would suggest on a pure $/sqft basis. This is
+            // a sanity-check display, not blended into the primary
+            // number, since $/sqft comps conflate size and condition.
+            let compCheckValue = null;
+            if (sqft && sqft > 0) {
+                const basePpsf = zoneApplied ? zoneApplied.medianPpsf : CITY_MEDIAN_PPSF;
+                const adjustedPpsf = basePpsf * ABOVE_GRADE_PPSF_ADJUSTMENT;
+                compCheckValue = Math.round(adjustedPpsf * sqft);
+            }
+
             const equity = currentValue - purchasePrice;
 
             return {
@@ -724,7 +841,9 @@
                 currentValue: Math.round(currentValue),
                 equity: Math.round(equity),
                 yearsOwned: yearsOwned,
-                renovationBoost: Math.round(renovationBoost)
+                renovationBoost: Math.round(renovationBoost),
+                zone: zoneApplied,
+                compCheckValue: compCheckValue
             };
         }
 
@@ -759,33 +878,33 @@
 
         function searchAddress() {
             const address = document.getElementById('addressInput').value.trim();
-            console.log('Search clicked, address:', address);
-            
+
             if (!address) {
-                alert('Please enter an address');
+                alert('Please enter your Longmont address');
+                document.getElementById('addressInput').focus();
                 return;
             }
 
-            const property = propertyDatabase.find(p => {
-                const match = p.address.toLowerCase().includes(address.toLowerCase()) && p.purchasePrice > 0;
-                console.log('Checking:', p.address, 'Match:', match);
-                return match;
-            });
+            // Detect zone from street name (no address database lookup —
+            // just a street-level zone classifier). No popup, no dead end:
+            // straight to the form either way.
+            detectedZoneCode = detectZone(address);
+            window.userAddress = address;
 
-            console.log('Property found:', property);
+            const form = document.getElementById('manualEntryForm');
+            form.classList.remove('hidden');
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-            if (property) {
-                currentCalculation = calculateEquity(property.purchasePrice, property.purchaseDate, selectedRenovations, 'upgrades', 'improvements', 'outdated', null);
-                displayResults(property);
-            } else {
-                alert('Address not found in our database. Please fill in your details below.');
-                document.getElementById('manualEntryForm').classList.remove('hidden');
-            }
+            setTimeout(() => {
+                document.getElementById('manualPurchaseYear').focus();
+            }, 400);
         }
 
         function calculateManual() {
             const year = document.getElementById('manualPurchaseYear').value;
             const price = parseFloat(document.getElementById('manualPurchasePrice').value);
+            const sqftRaw = document.getElementById('manualSqft').value;
+            const sqft = sqftRaw ? parseFloat(sqftRaw) : null;
             const conditionThen = document.getElementById('manualConditionThen').value;
             const conditionNow = document.getElementById('manualConditionNow').value;
             const kitchen = document.getElementById('manualKitchen').value;
@@ -796,7 +915,7 @@
                 return;
             }
 
-            currentCalculation = calculateEquity(price, year, selectedRenovations, conditionThen, conditionNow, kitchen, investment || null);
+            currentCalculation = calculateEquity(price, year, selectedRenovations, conditionThen, conditionNow, kitchen, investment || null, detectedZoneCode, sqft);
             displayResults(null, { purchasePrice: price, purchaseDate: year });
         }
 
@@ -807,6 +926,20 @@
             document.getElementById('yearsOwnedDisplay').textContent = data.yearsOwned + ' years';
             document.getElementById('currentValueDisplay').textContent = formatCurrency(data.currentValue);
             document.getElementById('equityDisplay').textContent = formatCurrency(data.equity);
+
+            const zoneInfoEl = document.getElementById('zoneInfoDisplay');
+            if (zoneInfoEl) {
+                let zoneText = '';
+                if (data.zone) {
+                    zoneText = `📍 ${data.zone.name} — based on ${data.zone.n} recent comparable sales in this area`;
+                } else {
+                    zoneText = '📍 Based on Longmont-wide market data';
+                }
+                if (data.compCheckValue) {
+                    zoneText += ` · Comp-based check (by sqft): ${formatCurrency(data.compCheckValue)}`;
+                }
+                zoneInfoEl.textContent = zoneText;
+            }
 
             if (data.renovationBoost > 0) {
                 document.getElementById('renovationBoostDisplay').textContent = '+' + formatCurrency(data.renovationBoost);
@@ -843,6 +976,8 @@
                 const conditionNow = document.getElementById('manualConditionNow').value;
                 const kitchen = document.getElementById('manualKitchen').value;
                 const investment = document.getElementById('manualInvestment').value;
+                const sqftRaw = document.getElementById('manualSqft').value;
+                const sqft = sqftRaw ? parseFloat(sqftRaw) : null;
 
                 currentCalculation = calculateEquity(
                     currentCalculation.originalPrice, 
@@ -851,11 +986,24 @@
                     conditionThen || null,
                     conditionNow || null,
                     kitchen || null,
-                    investment || null
+                    investment || null,
+                    detectedZoneCode,
+                    sqft
                 );
                 
                 document.getElementById('currentValueDisplay').textContent = formatCurrency(currentCalculation.currentValue);
                 document.getElementById('equityDisplay').textContent = formatCurrency(currentCalculation.equity);
+
+                const zoneInfoEl = document.getElementById('zoneInfoDisplay');
+                if (zoneInfoEl) {
+                    let zoneText = currentCalculation.zone
+                        ? `📍 ${currentCalculation.zone.name} — based on ${currentCalculation.zone.n} recent comparable sales in this area`
+                        : '📍 Based on Longmont-wide market data';
+                    if (currentCalculation.compCheckValue) {
+                        zoneText += ` · Comp-based check (by sqft): ${formatCurrency(currentCalculation.compCheckValue)}`;
+                    }
+                    zoneInfoEl.textContent = zoneText;
+                }
 
                 if (currentCalculation.renovationBoost > 0) {
                     document.getElementById('renovationBoostDisplay').textContent = '+' + formatCurrency(currentCalculation.renovationBoost);
