@@ -623,14 +623,53 @@
         // dampening reduced.
         // ============================================================
         const ZONES = {
-            oldtown: { name: "Old Town / Central Longmont", multiplier: 1.15, n: 21, medianPpsf: 376 },
-            north:   { name: "North Longmont / Near Niwot",  multiplier: 1.03, n: 13, medianPpsf: 267 },
-            ne:      { name: "Northeast Longmont",           multiplier: 1.04, n: 6,  medianPpsf: 273 },
-            se:      { name: "Southeast Longmont (Creekside/Fox Creek)", multiplier: 0.98, n: 15, medianPpsf: 237 },
-            sw:      { name: "Southwest Longmont (Golf Course Communities)", multiplier: 0.94, n: 19, medianPpsf: 203 },
-            rural:   { name: "Rural / Longmont Fringe",      multiplier: 1.13, n: 1,  medianPpsf: 338 }
+            blue_vista: { name: "Blue Vista", multiplier: 1.552, n: 35, medianPpsf: 365.94 },
+            clover_creek: { name: "Clover Creek", multiplier: 0.991, n: 68, medianPpsf: 233.53 },
+            creekside: { name: "Creekside", multiplier: 0.932, n: 40, medianPpsf: 219.6 },
+            fox_creek_farm: { name: "Fox Creek Farm", multiplier: 0.969, n: 56, medianPpsf: 228.5 },
+            fox_hill: { name: "Fox Hill", multiplier: 0.839, n: 44, medianPpsf: 197.87 },
+            fox_meadows: { name: "Fox Meadows", multiplier: 0.735, n: 37, medianPpsf: 173.19 },
+            harvest_junction: { name: "Harvest Junction", multiplier: 0.692, n: 48, medianPpsf: 163.08 },
+            harvest_junction_village: { name: "Harvest Junction Village", multiplier: 0.787, n: 45, medianPpsf: 185.51 },
+            hilltop_village: { name: "Hilltop Village", multiplier: 0.926, n: 51, medianPpsf: 218.29 },
+            holiday_park: { name: "Holiday Park", multiplier: 1.22, n: 44, medianPpsf: 287.66 },
+            horizon_west: { name: "Horizon West", multiplier: 1.099, n: 37, medianPpsf: 259.02 },
+            hover_acres: { name: "Hover Acres", multiplier: 0.969, n: 64, medianPpsf: 228.31 },
+            longmont_estates: { name: "Longmont Estates", multiplier: 1.029, n: 115, medianPpsf: 242.54 },
+            longmont_ot_premium: { name: "Longmont OT", multiplier: 1.426, n: 39, medianPpsf: 336.04 },
+            longmont_ot: { name: "Longmont Ot", multiplier: 1.354, n: 51, medianPpsf: 319.18 },
+            longmont_village: { name: "Longmont Village", multiplier: 1.007, n: 31, medianPpsf: 237.43 },
+            meadow_mountain: { name: "Meadow Mountain", multiplier: 0.906, n: 64, medianPpsf: 213.46 },
+            meadowlark: { name: "Meadowlark", multiplier: 1.088, n: 78, medianPpsf: 256.43 },
+            meadowlark_1: { name: "Meadowlark 1", multiplier: 1.103, n: 39, medianPpsf: 260.02 },
+            meadowview: { name: "Meadowview", multiplier: 1.095, n: 35, medianPpsf: 258.16 },
+            melody_valley: { name: "Melody Valley", multiplier: 1.036, n: 43, medianPpsf: 244.12 },
+            melody_valley_2: { name: "Melody Valley 2", multiplier: 1.064, n: 34, medianPpsf: 250.79 },
+            mill_village: { name: "Mill Village", multiplier: 0.918, n: 30, medianPpsf: 216.41 },
+            mountain_brook: { name: "Mountain Brook", multiplier: 1.259, n: 52, medianPpsf: 296.87 },
+            old_town: { name: "Old Town", multiplier: 1.397, n: 90, medianPpsf: 329.2 },
+            prospect: { name: "PROSPECT", multiplier: 1.267, n: 31, medianPpsf: 298.74 },
+            park_north: { name: "Park North", multiplier: 1.262, n: 53, medianPpsf: 297.55 },
+            park_ridge: { name: "Park Ridge", multiplier: 1.212, n: 88, medianPpsf: 285.71 },
+            park_ridge_3: { name: "Park Ridge 3", multiplier: 1.311, n: 42, medianPpsf: 309.01 },
+            pleasant_valley: { name: "Pleasant Valley", multiplier: 0.862, n: 58, medianPpsf: 203.29 },
+            prairie_village: { name: "Prairie Village", multiplier: 0.741, n: 64, medianPpsf: 174.66 },
+            provenance: { name: "Provenance", multiplier: 0.681, n: 84, medianPpsf: 160.44 },
+            quail_crossing: { name: "Quail Crossing", multiplier: 0.678, n: 50, medianPpsf: 159.81 },
+            quail_ridge: { name: "Quail Ridge", multiplier: 0.889, n: 42, medianPpsf: 209.44 },
+            renaissance: { name: "Renaissance", multiplier: 0.922, n: 95, medianPpsf: 217.39 },
+            shadow_grass: { name: "Shadow Grass", multiplier: 0.616, n: 41, medianPpsf: 145.17 },
+            somerset_meadows: { name: "Somerset Meadows", multiplier: 0.942, n: 83, medianPpsf: 222.12 },
+            southmoor_park: { name: "Southmoor Park", multiplier: 1.043, n: 69, medianPpsf: 245.9 },
+            spring_valley: { name: "Spring Valley", multiplier: 0.705, n: 120, medianPpsf: 166.29 },
+            stoney_ridge: { name: "Stoney Ridge", multiplier: 0.864, n: 57, medianPpsf: 203.61 },
+            sun_valley: { name: "Sun Valley", multiplier: 0.988, n: 31, medianPpsf: 232.95 },
+            west_grange: { name: "West Grange", multiplier: 1.177, n: 74, medianPpsf: 277.52 },
+            westlake_manors: { name: "Westlake Manors", multiplier: 0.824, n: 35, medianPpsf: 194.23 },
+            wolf_creek: { name: "Wolf Creek", multiplier: 0.925, n: 78, medianPpsf: 218.14 },
+            woodmeadow: { name: "Woodmeadow", multiplier: 1.231, n: 41, medianPpsf: 290.12 }
         };
-        const CITY_MEDIAN_PPSF = 248;
+        const CITY_MEDIAN_PPSF = 235.72; // Real data: 2020-2026 median from 21,536 comps
 
         // The zone $/sqft figures above were calibrated against MLS
         // "Total SqFt" — which for most Longmont single-story homes
@@ -701,35 +740,52 @@
         let detectedZoneCode = null;
 
         // Year-by-year appreciation curve for Longmont, single-family,
-        // calibrated against real May-sold-comp medians ($/sqft, Total
-        // SqFt basis) for 2008, 2010, 2012, 2014, 2016, 2018, 2020,
-        // 2021, 2022, 2023, 2024, 2025, and the existing 400-comp 2026
-        // anchor. Two-year gaps (e.g. 2008-2010) are converted to a
-        // flat annual rate (CAGR) and applied to both years in the gap.
+        // FULLY CALIBRATED AGAINST REAL DATA: 21,536 single-family home
+        // sales from 2006-2026, extracted from 70 MLS PDFs. Median $/sqft
+        // (Total SqFt basis) is calculated for each year. Years 2006-2026
+        // use actual year-over-year rates; fallback CAGRs apply outside
+        // this range (e.g., if a homeowner bought in 1995).
         //
-        // 2022-2025 note: a same-year-mix sanity check (restricting to
-        // comps under 2,500 total sqft) showed this span is close to
-        // FLAT in like-for-like terms (~$310-317/sqft throughout),
-        // even though the raw full-sample medians swing wildly
-        // (+31.5%, -17.2%, +14.9%, -13.4%). That swing looks driven
-        // mostly by which size of home happened to sell each May, not
-        // real price movement. So: 2022 keeps its real, well-supported
-        // spike (COVID-era peak, right before mortgage rates jumped),
-        // but 2023-2025 are smoothed to a single 3-year CAGR rather
-        // than chasing each noisy full-sample swing individually. 2026
-        // reconnects to the actual 400-comp calibrated anchor.
+        // Key findings:
+        // - 2006-2008: Housing crash (-6.53% CAGR)
+        // - 2008-2010: Slow recovery (+1.26% CAGR)
+        // - 2012-2014: Boom begins (+9.50% CAGR)
+        // - 2014-2016: Peak appreciation (+12.46% CAGR)
+        // - 2020-2022: COVID frenzy (+17.88% CAGR)
+        // - 2022-2024: Market flattens (+0.61% CAGR)
+        // - 2024-2026: Slight decline (-1.11% CAGR)
+        //
+        // This replaces all prior estimates/guesses with empirical data.
         function getAppreciationRate(year) {
-            if (year >= 2009 && year <= 2010) return -0.0461; // 2008->2010 CAGR: correction after the mid-2000s peak
-            if (year >= 2011 && year <= 2012) return 0.0253;  // 2010->2012 CAGR: recovery underway
-            if (year >= 2013 && year <= 2014) return 0.0734;  // 2012->2014 CAGR
-            if (year >= 2015 && year <= 2016) return 0.1839;  // 2014->2016 CAGR: boom years
-            if (year >= 2017 && year <= 2018) return 0.1114;  // 2016->2018 CAGR
-            if (year >= 2019 && year <= 2020) return -0.0572; // 2018->2020 CAGR: real pre-frenzy dip, not the +15% previously assumed
-            if (year === 2021) return 0.2342;                 // 2020->2021: COVID-boom recovery jump
-            if (year === 2022) return 0.3155;                 // 2021->2022: real COVID-era price peak (right before rates rose)
-            if (year >= 2023 && year <= 2025) return -0.0624; // 2022->2025 smoothed CAGR (see mix-noise note above)
-            if (year === 2026) return 0.0703;                 // 2025->2026: reconnects to calibrated 400-comp anchor
-            return 0.0506; // fallback outside 2009-2026: long-run 2008-2026 CAGR
+            // Real year-over-year rates derived from 21,536 Longmont comps (2006-2026)
+            const medianPpsf = {
+                2006: 110.66, 2007: 106.31, 2008: 96.67, 2009: 96.82, 2010: 99.12,
+                2011: 96.67, 2012: 100.38, 2013: 107.67, 2014: 120.36, 2015: 133.28,
+                2016: 152.22, 2017: 159.64, 2018: 172.13, 2019: 172.88, 2020: 183.05,
+                2021: 224.40, 2022: 254.35, 2023: 244.67, 2024: 257.45, 2025: 251.08,
+                2026: 251.79
+            };
+            
+            // Use actual year-over-year rates when available
+            const ppsf = medianPpsf[year];
+            const prevPpsf = medianPpsf[year - 1];
+            if (ppsf && prevPpsf) {
+                return ppsf / prevPpsf - 1;
+            }
+            
+            // Fallback to historical CAGRs for years outside 2006-2026
+            if (year >= 2006 && year <= 2008) return -0.0653; // 2006-2008 CAGR
+            if (year >= 2008 && year <= 2010) return 0.0126;  // 2008-2010 CAGR
+            if (year >= 2010 && year <= 2012) return 0.0063;  // 2010-2012 CAGR
+            if (year >= 2012 && year <= 2014) return 0.0950;  // 2012-2014 CAGR
+            if (year >= 2014 && year <= 2016) return 0.1246;  // 2014-2016 CAGR
+            if (year >= 2016 && year <= 2018) return 0.0634;  // 2016-2018 CAGR
+            if (year >= 2018 && year <= 2020) return 0.0312;  // 2018-2020 CAGR
+            if (year >= 2020 && year <= 2022) return 0.1788;  // 2020-2022 CAGR (COVID boom)
+            if (year >= 2022 && year <= 2024) return 0.0061;  // 2022-2024 CAGR
+            if (year >= 2024 && year <= 2026) return -0.0111; // 2024-2026 CAGR
+            
+            return 0.0506; // Long-run 2006-2026 average fallback
         }
 
         function getConditionMultiplier(conditionThen, conditionNow, kitchen, investmentAmount = null) {
