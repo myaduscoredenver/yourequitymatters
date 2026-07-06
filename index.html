@@ -5,1178 +5,382 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Equity Matters - Longmont Home Value Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
-    <script src="https://forminit.com/sdk/v1/forminit.js"></script>
-    <style>
-        /* Range slider styling */
-        input[type="range"] {
-            -webkit-appearance: none;
-            appearance: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: #facc15;
-            cursor: pointer;
-            border: 2px solid #fbbf24;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: #facc15;
-            cursor: pointer;
-            border: 2px solid #fbbf24;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        input[type="range"]::-webkit-slider-thumb:hover {
-            background: #f59e0b;
-        }
-
-        input[type="range"]::-moz-range-thumb:hover {
-            background: #f59e0b;
-        }
-
-        .equity-number {
-            animation: slideUp 0.6s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .renovation-pill {
-            transition: all 0.2s ease;
-        }
-
-        .renovation-pill.active {
-            background-color: #059669;
-            color: white;
-        }
-    </style>
 </head>
-<body class="bg-white">
-    <div id="app">
-        <!-- Header -->
-        <header class="bg-white shadow-sm sticky top-0 z-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center gap-4">
-                <img src="logo.png" alt="Homestead Real Estate" class="h-12 sm:h-14">
-                <a href="#form" class="ml-auto bg-yellow-400 hover:bg-yellow-500 text-slate-900 text-xs sm:text-sm font-bold px-4 sm:px-6 py-2 rounded-lg transition-colors cursor-pointer whitespace-nowrap">
-                    Let's Talk
-                </a>
-            </div>
-        </header>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-black text-slate-900 mb-2">Your Equity Matters</h1>
+            <p class="text-xl text-slate-600">Longmont Home Value Calculator</p>
+            <p class="text-sm text-emerald-700 font-semibold mt-2">Powered by 16,950 Longmont comps (2006-2026)</p>
+        </div>
 
-        <!-- Hero Section -->
-        <section class="relative min-h-screen md:h-screen flex items-center justify-center overflow-hidden bg-gradient-to-r from-blue-900 via-blue-800 to-cyan-700">
-            <div class="absolute inset-0 opacity-20" style="background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 800%22><defs><pattern id=%22grid%22 width=%2240%22 height=%2240%22 patternUnits=%22userSpaceOnUse%22><path d=%22M 40 0 L 0 0 0 40%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22/></pattern></defs><rect width=%221200%22 height=%22800%22 fill=%22url(%23grid)%22/></svg>')"></div>
-            
-            <div class="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16 sm:py-20 md:py-0">
-                <div class="mb-6 inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                    <p class="text-white font-semibold text-sm">You Crushed It.<br>Now Let's See How Much.</p>
-                </div>
-                
-                <h1 class="text-3xl sm:text-5xl md:text-7xl font-black text-white mb-6 leading-snug">
-                    See What Your Longmont Home Equity Is Worth Today
-                </h1>
-                
-                <p class="text-xl md:text-2xl text-blue-50 mb-4 font-light">
-                    If you bought between 2009-2021, you've likely built significant equity. Let's find out how much.
-                </p>
-
-                <p class="text-lg text-blue-100 mb-8">
-                    Enter your address and we'll show you what your home might be worth based on current market conditions.
-                </p>
-
-                <div class="flex justify-center mb-12">
-                    <a href="#calculator" class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold py-4 px-8 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
-                        Check Your Equity
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Equity Calculator Section -->
-        <section id="calculator" class="bg-gradient-to-br from-slate-50 via-white to-cyan-50 py-12 sm:py-20">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mb-4">Your Equity Calculator</h2>
-                    <p class="text-lg text-slate-600">Enter your address to get started</p>
-                </div>
-
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div class="p-8 bg-slate-50 border-b-2 border-slate-200">
                 <!-- Address Lookup -->
-                <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
-                    <label class="block text-sm font-semibold text-slate-900 mb-3">Your Longmont Address</label>
-                    <div class="flex gap-2 mb-4">
-                        <input 
-                            type="text" 
-                            id="addressInput" 
-                            placeholder="e.g., 1345 Lincoln St" 
-                            class="flex-1 px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600 text-slate-900"
-                        >
-                        <button type="button" id="searchButton" class="bg-yellow-400 hover:bg-yellow-500 text-slate-900 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap cursor-pointer">
-                            Show Me My Equity
-                        </button>
-                    </div>
-                    <p class="text-sm text-slate-500 mb-4">Don't see your address? No problem—fill in your details below.</p>
-
-                    <!-- Manual Entry Form (Hidden by default) -->
-                    <div id="manualEntryForm" class="hidden border-t-2 border-slate-200 pt-6">
-                        <h3 class="font-semibold text-slate-900 mb-4">Tell Us About Your Home</h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">When Did You Buy?</label>
-                                <input 
-                                    type="number" 
-                                    id="manualPurchaseYear" 
-                                    min="1980" 
-                                    max="2024" 
-                                    placeholder="2012" 
-                                    class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
-                                >
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Purchase Price</label>
-                                <div class="flex items-center">
-                                    <span class="text-slate-600 mr-2">$</span>
-                                    <input 
-                                        type="number" 
-                                        id="manualPurchasePrice" 
-                                        placeholder="250000" 
-                                        class="flex-1 px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
-                                    >
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Approx. Square Footage (not including basement) <span class="text-slate-400 font-normal">(optional, improves accuracy)</span></label>
-                                <input 
-                                    type="number" 
-                                    id="manualSqft" 
-                                    placeholder="1500" 
-                                    class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
-                                >
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Condition When You Bought It</label>
-                                <select id="manualConditionThen" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
-                                    <option value="">Select condition</option>
-                                    <option value="fixer">A true fixer upper!</option>
-                                    <option value="outdated">OK, but definitely outdated</option>
-                                    <option value="upgrades">Some upgrades</option>
-                                    <option value="remodeled">Fully remodeled</option>
-                                    <option value="amazing">Fully remodeled with amazing features and finishes</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Condition of Property Today</label>
-                                <select id="manualConditionNow" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
-                                    <option value="">Select condition</option>
-                                    <option value="nothing">I didn't do anything</option>
-                                    <option value="improvements">A few improvements</option>
-                                    <option value="remodeled">I completely remodeled it</option>
-                                </select>
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Tell Me About the Kitchen</label>
-                                <select id="manualKitchen" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
-                                    <option value="">Select kitchen condition</option>
-                                    <option value="barely">Barely functional</option>
-                                    <option value="outdated">Outdated but nice</option>
-                                    <option value="remodeled">Remodeled</option>
-                                    <option value="luxury">Luxury - it's a chef's kitchen!</option>
-                                </select>
-                            </div>
-                            <div id="investmentField" class="hidden md:col-span-2">
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Approximately How Much Did You Invest in Improvements?</label>
-                                <select id="manualInvestment" class="w-full px-4 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
-                                    <option value="">Select investment range</option>
-                                    <option value="10to25">$10,000 - $25,000</option>
-                                    <option value="25to50">$25,000 - $50,000</option>
-                                    <option value="50to75">$50,000 - $75,000</option>
-                                    <option value="75to100">$75,000 - $100,000</option>
-                                    <option value="100to200">$100,000 - $200,000</option>
-                                    <option value="over200">$200,000+</option>
-                                </select>
-                            </div>
+                <div class="mb-8">
+                    <label class="block text-lg font-bold text-slate-900 mb-3">Your Address</label>
+                    <div class="flex gap-3">
+                        <div class="flex-1 relative">
+                            <input 
+                                type="text" 
+                                id="addressInput" 
+                                placeholder="e.g., 747 Judson St" 
+                                autocomplete="off"
+                                class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-blue-600 focus:outline-none font-medium"
+                            />
+                            <div id="addressSuggestions" class="hidden absolute top-full left-0 right-0 bg-white border-2 border-slate-300 rounded-lg mt-1 max-h-48 overflow-y-auto z-10 shadow-lg"></div>
                         </div>
-
-                        <button onclick="calculateManual()" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-lg transition-colors mb-4">
-                            Calculate Equity
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Results Display -->
-                <div id="resultsSection" class="hidden">
-                    <!-- Main Equity Card -->
-                    <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl shadow-2xl p-8 mb-8 border-2 border-emerald-300">
-                        <p class="text-slate-600 text-sm font-medium mb-2">Your Estimated Home Value Today</p>
-                        <div class="flex items-baseline gap-2 mb-2">
-                            <span class="text-6xl sm:text-7xl font-black text-emerald-700 equity-number" id="currentValueDisplay">$0</span>
-                        </div>
-                        <p class="text-sm text-slate-500 mb-6" id="zoneInfoDisplay"></p>
-
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div class="bg-white/80 backdrop-blur rounded-lg p-4">
-                                <p class="text-slate-600 text-sm mb-1">You Paid</p>
-                                <p class="text-2xl font-black text-slate-900" id="purchasePriceDisplay">$0</p>
-                            </div>
-                            <div class="bg-white/80 backdrop-blur rounded-lg p-4">
-                                <p class="text-slate-600 text-sm mb-1">Years Owned</p>
-                                <p class="text-2xl font-black text-slate-900" id="yearsOwnedDisplay">0</p>
-                            </div>
-                        </div>
-
-                        <div class="bg-emerald-600 text-white rounded-xl p-6">
-                            <p class="text-emerald-100 text-sm font-medium mb-1">💰 Your Equity Built</p>
-                            <p class="text-5xl font-black equity-number" id="equityDisplay">$0</p>
-                        </div>
-                    </div>
-
-                    <!-- Renovation Boost (if applicable) -->
-                    <div id="renovationBoostCard" class="hidden bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl shadow-xl p-6 mb-8 border-2 border-amber-300">
-                        <p class="text-slate-700 font-medium mb-2">✨ Renovation Premium Added</p>
-                        <p class="text-4xl font-black text-amber-700" id="renovationBoostDisplay">+$0</p>
-                    </div>
-
-                    <!-- Info Text -->
-                    <div class="bg-blue-50 border-l-4 border-blue-600 rounded-lg p-6 mb-8">
-                        <p class="text-slate-800 font-medium mb-2">📋 What You're Seeing</p>
-                        <p class="text-slate-700 text-sm">This is a professional estimate based on Longmont market appreciation since your purchase date. The actual value may vary based on specific property conditions, market timing, and local factors. Next steps? Let's connect to discuss your options.</p>
-                    </div>
-
-                    <!-- This Doesn't Look Right Button -->
-                    <div class="text-center mb-8">
-                        <button onclick="showFeedbackForm()" class="inline-flex items-center gap-2 bg-slate-200 hover:bg-slate-300 text-slate-900 font-semibold py-3 px-6 rounded-lg transition-colors">
-                            This Doesn't Look Right
-                        </button>
-                    </div>
-
-                    <!-- Feedback Form (Hidden by default) -->
-                    <div id="feedbackFormSection" class="hidden bg-white rounded-2xl shadow-xl p-8 border-2 border-slate-300">
-                        <h3 class="text-2xl font-bold text-slate-900 mb-2">Help Us Get It Right</h3>
-                        <p class="text-slate-600 mb-6">Tell us more about your property so we can provide a more accurate estimate.</p>
-                        
-                        <form id="feedbackForm" class="space-y-6">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-semibold text-slate-900 mb-2">Name *</label>
-                                    <input 
-                                        type="text" 
-                                        id="feedbackName" 
-                                        required 
-                                        class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
-                                    >
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-slate-900 mb-2">Email *</label>
-                                    <input 
-                                        type="email" 
-                                        id="feedbackEmail" 
-                                        required 
-                                        class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
-                                    >
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-semibold text-slate-900 mb-2">Phone</label>
-                                    <input 
-                                        type="tel" 
-                                        id="feedbackPhone" 
-                                        class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
-                                    >
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-slate-900 mb-2">Address *</label>
-                                    <input 
-                                        type="text" 
-                                        id="feedbackAddress" 
-                                        required 
-                                        class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
-                                    >
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-900 mb-2">Tell Me About the Improvements You Have Made to the Property During Your Ownership *</label>
-                                <textarea 
-                                    id="feedbackImprovements" 
-                                    required 
-                                    rows="6" 
-                                    placeholder="Describe any renovations, upgrades, or improvements you've made (e.g., kitchen remodel in 2018, new roof in 2020, etc.)" 
-                                    class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600 resize-none"
-                                ></textarea>
-                            </div>
-
-                            <div class="flex gap-4">
-                                <button 
-                                    type="submit" 
-                                    class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-lg transition-colors"
-                                >
-                                    Submit Feedback
-                                </button>
-                                <button 
-                                    type="button" 
-                                    onclick="hideFeedbackForm()" 
-                                    class="flex-1 bg-slate-300 hover:bg-slate-400 text-slate-900 font-bold py-3 rounded-lg transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Commission Rates Section (from MyLongmontHome) -->
-        <section class="bg-white py-12 sm:py-20 border-t-2 border-slate-100">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mb-4">My Commission Rates</h2>
-                    <p class="text-lg text-slate-600">Competitive rates to keep more of your equity in your pocket</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                    <div class="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl shadow-lg p-8 border-2 border-cyan-300">
-                        <div class="mb-6">
-                            <p class="text-slate-600 text-sm font-medium mb-2">Buy & Sell with Me</p>
-                            <p class="text-5xl font-black text-cyan-600">0.9%</p>
-                            <p class="text-slate-700 text-sm mt-2">Combined representation</p>
-                        </div>
-                        <ul class="space-y-3 text-slate-700">
-                            <li class="flex items-start gap-3">
-                                <span class="text-cyan-600 font-bold mt-1">✓</span>
-                                <span>Full service real estate support</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <span class="text-cyan-600 font-bold mt-1">✓</span>
-                                <span>Professional marketing & showings</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <span class="text-cyan-600 font-bold mt-1">✓</span>
-                                <span>17 years of Longmont expertise</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-gradient-to-br from-blue-50 to-slate-50 rounded-2xl shadow-lg p-8 border-2 border-blue-300">
-                        <div class="mb-6">
-                            <p class="text-slate-600 text-sm font-medium mb-2">Sell Only</p>
-                            <p class="text-5xl font-black text-blue-600">1.9%</p>
-                            <p class="text-slate-700 text-sm mt-2">If you're selling without buying</p>
-                        </div>
-                        <ul class="space-y-3 text-slate-700">
-                            <li class="flex items-start gap-3">
-                                <span class="text-blue-600 font-bold mt-1">✓</span>
-                                <span>Comprehensive seller representation</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <span class="text-blue-600 font-bold mt-1">✓</span>
-                                <span>Still below market average rates</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <span class="text-blue-600 font-bold mt-1">✓</span>
-                                <span>Maximum exposure for your home</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Remove the Friction Section (from MyLongmontHome) -->
-        <section class="bg-gradient-to-br from-slate-900 to-slate-800 py-12 sm:py-20 text-white">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl sm:text-4xl font-black mb-4">Remove the Friction</h2>
-                    <p class="text-xl text-slate-300">Selling your Longmont home doesn't have to be complicated</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
-                        <div class="text-3xl mb-4">🎯</div>
-                        <h3 class="text-xl font-bold mb-3">Local Expert</h3>
-                        <p class="text-slate-200">I know Longmont inside and out. Every neighborhood, every market trend, every buyer profile. That expertise saves you time and money.</p>
-                    </div>
-
-                    <div class="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
-                        <div class="text-3xl mb-4">💰</div>
-                        <h3 class="text-xl font-bold mb-3">Competitive Rates</h3>
-                        <p class="text-slate-200">Why pay premium commissions? You already paid enough to build equity. Keep more of what you've earned.</p>
-                    </div>
-
-                    <div class="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
-                        <div class="text-3xl mb-4">📱</div>
-                        <h3 class="text-xl font-bold mb-3">Modern Communication</h3>
-                        <p class="text-slate-200">Text, email, or call—whatever works for you. I'm responsive and keep you informed every step of the way.</p>
-                    </div>
-
-                    <div class="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
-                        <div class="text-3xl mb-4">🤝</div>
-                        <h3 class="text-xl font-bold mb-3">Full Support</h3>
-                        <p class="text-slate-200">From listing to closing, I handle the details so you can focus on what matters. No surprises, just transparency.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Track Record Section (from MyLongmontHome) -->
-        <section class="bg-gradient-to-br from-cyan-50 via-white to-blue-50 py-12 sm:py-20">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mb-4">My Track Record</h2>
-                    <p class="text-xl text-slate-600">17 years of results in Longmont real estate</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="bg-white rounded-2xl shadow-lg p-8 text-center border-t-4 border-cyan-600">
-                        <div class="text-5xl font-black text-cyan-600 mb-2">120+</div>
-                        <p class="text-slate-700 font-semibold">Homes Sold</p>
-                        <p class="text-sm text-slate-600 mt-2">Across Longmont and surrounding areas</p>
-                    </div>
-
-                    <div class="bg-white rounded-2xl shadow-lg p-8 text-center border-t-4 border-emerald-600">
-                        <div class="text-5xl font-black text-emerald-600 mb-2">17</div>
-                        <p class="text-slate-700 font-semibold">Years of Experience</p>
-                        <p class="text-sm text-slate-600 mt-2">Through market ups and downs</p>
-                    </div>
-
-                    <div class="bg-white rounded-2xl shadow-lg p-8 text-center border-t-4 border-blue-600">
-                        <div class="text-5xl font-black text-blue-600 mb-2">⭐⭐⭐⭐⭐</div>
-                        <p class="text-slate-700 font-semibold">5 Star Reviews</p>
-                        <p class="text-sm text-slate-600 mt-2">From clients just like you</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- I'm James Taylor Section (from MyLongmontHome) -->
-        <section class="bg-white py-12 sm:py-20 border-t-2 border-slate-100">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                    <div>
-                        <img src="james-taylor-professional.jpg" alt="James Taylor" class="rounded-2xl shadow-2xl w-full object-cover h-96">
-                    </div>
-                    <div>
-                        <h2 class="text-4xl sm:text-5xl font-black text-slate-900 mb-6">I'm James Taylor</h2>
-                        <p class="text-lg text-slate-700 mb-4">
-                            I grew up in Longmont and came back to serve the community I love. For 17 years, I've helped families and investors navigate the Longmont real estate market with transparency, expertise, and competitive rates.
-                        </p>
-                        <p class="text-lg text-slate-700 mb-6">
-                            I'm not here to maximize my commission—I'm here to maximize your outcome. That's why I offer some of the lowest rates in the area while delivering full-service representation. Your success is my success.
-                        </p>
-                        <div class="bg-gradient-to-r from-cyan-100 to-blue-100 rounded-xl p-6 border-l-4 border-cyan-600">
-                            <p class="text-slate-800 italic font-medium">
-                                "Whether you're selling the home you've built equity in, or buying your next place, I'm ready to help you make the right move."
-                            </p>
-                            <p class="text-slate-700 font-bold mt-3">— James Taylor</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Let's Make a Move Form Section (from MyLongmontHome) -->
-        <section id="form" class="bg-gradient-to-br from-blue-900 via-cyan-800 to-blue-800 py-12 sm:py-20 text-white">
-            <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl sm:text-4xl font-black mb-4">Let's Make a Move</h2>
-                    <p class="text-xl text-blue-100">Tell me about your situation and let's explore your options</p>
-                </div>
-
-                <div class="bg-white/95 backdrop-blur rounded-2xl shadow-2xl p-8 text-slate-900">
-                    <form id="contactForm" class="space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-900 mb-2">First Name *</label>
-                                <input 
-                                    type="text" 
-                                    name="firstName" 
-                                    required 
-                                    class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
-                                >
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-900 mb-2">Last Name *</label>
-                                <input 
-                                    type="text" 
-                                    name="lastName" 
-                                    required 
-                                    class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
-                                >
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-900 mb-2">Email *</label>
-                                <input 
-                                    type="email" 
-                                    name="email" 
-                                    required 
-                                    class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
-                                >
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-900 mb-2">Phone *</label>
-                                <input 
-                                    type="tel" 
-                                    name="phone" 
-                                    required 
-                                    class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600"
-                                >
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-900 mb-2">What's Your Timeline?</label>
-                            <select name="timeline" class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
-                                <option value="">Select a timeframe</option>
-                                <option value="immediately">As soon as possible</option>
-                                <option value="3months">Next 3 months</option>
-                                <option value="6months">6 months</option>
-                                <option value="1year">Next year</option>
-                                <option value="exploring">Just exploring</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-900 mb-2">How Did You Hear About This?</label>
-                            <select name="source" class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600">
-                                <option value="">Select one</option>
-                                <option value="postcard">Postcard from James</option>
-                                <option value="facebook">Facebook Ad</option>
-                                <option value="referral">Friend or Family Referral</option>
-                                <option value="search">Google Search</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-900 mb-2">Tell Me About Your Situation</label>
-                            <textarea 
-                                name="message" 
-                                rows="5" 
-                                placeholder="Are you thinking about selling? Want a home valuation? Let me know what brought you here..." 
-                                class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600 resize-none"
-                            ></textarea>
-                        </div>
-
                         <button 
-                            type="submit" 
-                            class="w-full bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-black text-lg py-4 rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                            onclick="searchAddress()"
+                            class="bg-yellow-400 hover:bg-yellow-500 text-slate-900 font-bold py-3 px-8 rounded-lg transition-colors"
                         >
-                            Send My Information
+                            Search
                         </button>
+                    </div>
+                    <p class="text-slate-500 text-sm mt-2">Enter your Longmont address. We'll auto-populate your purchase details.</p>
+                </div>
 
-                        <p class="text-xs text-slate-600 text-center">
-                            I'll review your information and follow up within 24 hours. Your details are private and secure.
-                        </p>
-                    </form>
+                <!-- Auto-populated fields (read-only) -->
+                <div id="autoPopulatedSection" class="hidden mb-8 p-6 bg-blue-50 border-2 border-blue-300 rounded-lg">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4">📋 Your Purchase Details (From Comps Database)</h3>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700">Purchase Date</label>
+                            <p class="text-lg font-bold text-slate-900" id="purchaseDateDisplay">—</p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700">Purchase Price</label>
+                            <p class="text-lg font-bold text-slate-900" id="purchasePriceDisplay">—</p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700">Square Footage</label>
+                            <p class="text-lg font-bold text-slate-900" id="sqftDisplay">—</p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700">Neighborhood</label>
+                            <p class="text-lg font-bold text-slate-900" id="subdivisionDisplay">—</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Not found section -->
+                <div id="notFoundSection" class="hidden mb-8 p-6 bg-amber-50 border-2 border-amber-600 rounded-lg">
+                    <p class="text-amber-900 font-bold mb-2">📍 Property not in database</p>
+                    <p class="text-amber-800 text-sm mb-4">No recent sales found for this address. Enter your details manually below, or search again.</p>
+                    <button onclick="toggleManualEntry()" class="text-amber-700 font-semibold hover:underline">
+                        Enter details manually →
+                    </button>
+                </div>
+
+                <!-- Manual entry (fallback) -->
+                <div id="manualEntrySection" class="hidden mb-8 p-6 bg-slate-100 rounded-lg border-2 border-slate-300">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4">Enter Your Details</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm font-semibold text-slate-900 mb-2 block">When did you buy?</label>
+                            <select id="purchaseYear" class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-blue-600 focus:outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-900 mb-2 block">Purchase price</label>
+                            <div class="flex items-center">
+                                <span class="text-slate-600 mr-2">$</span>
+                                <input type="number" id="manualPrice" placeholder="425000" class="flex-1 px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-blue-600 focus:outline-none" />
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-900 mb-2 block">Square footage</label>
+                            <input type="number" id="manualSqft" placeholder="1500" class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-blue-600 focus:outline-none" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boom period toggle -->
+                <div class="bg-blue-50 border-2 border-blue-300 rounded-xl p-6 mb-8">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="boomPeriodToggle" class="w-5 h-5 border-2 border-blue-600 rounded" />
+                        <span class="text-slate-900 font-bold">Purchased Dec 2020 - Apr 2022 with multiple offers?</span>
+                    </label>
+                    <p class="text-slate-600 text-sm mt-2 ml-8">We'll adjust for boom-period inflation using fair value calculation.</p>
+                </div>
+
+                <!-- Condition questions (simplified) -->
+                <div class="space-y-6 mb-8">
+                    <h3 class="text-lg font-bold text-slate-900">What's Changed Since You Bought It?</h3>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-900 mb-2">Overall condition changes</label>
+                        <select id="conditionChange" class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-blue-600 focus:outline-none">
+                            <option value="">Select...</option>
+                            <option value="nothing">Nothing—I haven't done any work</option>
+                            <option value="basic">Basic updates (paint, carpet, some repairs)</option>
+                            <option value="kitchen">Kitchen remodel</option>
+                            <option value="major">Major renovation (kitchen + bathrooms + more)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-900 mb-2">Kitchen condition</label>
+                        <select id="kitchen" class="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-blue-600 focus:outline-none">
+                            <option value="">Select...</option>
+                            <option value="original">Original (1950s-2000s)</option>
+                            <option value="outdated">Outdated but working</option>
+                            <option value="updated">Recently updated/remodeled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button 
+                    type="button"
+                    onclick="calculateEquity()"
+                    class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-lg transition-colors text-lg"
+                >
+                    Calculate My Equity
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="hidden p-8 space-y-8">
+                <div id="boomModeCard" class="hidden bg-blue-100 border-2 border-blue-500 rounded-xl p-6">
+                    <p class="text-blue-900 font-bold mb-2">🎯 Boom Period Fair Value Adjustment Applied</p>
+                    <p class="text-blue-800 text-sm">We adjusted your 2020-2022 purchase price for boom-period inflation and applied conservative post-boom appreciation rates.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl shadow-2xl p-8 border-2 border-emerald-300">
+                    <p class="text-slate-600 text-sm font-medium mb-2">Your Estimated Home Value Today</p>
+                    <div class="text-6xl sm:text-7xl font-black text-emerald-700 mb-4 font-variant-numeric: tabular-nums;" id="currentValueDisplay">$0</div>
+
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white/80 backdrop-blur rounded-lg p-4">
+                            <p class="text-slate-600 text-xs mb-1">You Paid</p>
+                            <p class="text-xl font-black text-slate-900" id="purchasePriceResultDisplay">$0</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur rounded-lg p-4">
+                            <p class="text-slate-600 text-xs mb-1">Years Owned</p>
+                            <p class="text-xl font-black text-slate-900" id="yearsOwnedDisplay">0</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur rounded-lg p-4">
+                            <p class="text-slate-600 text-xs mb-1">Appreciation</p>
+                            <p class="text-xl font-black text-emerald-700" id="appreciationDisplay">+0%</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-600 text-white rounded-xl p-6">
+                        <p class="text-emerald-100 text-sm font-medium mb-1">💰 Your Equity Built</p>
+                        <p class="text-5xl font-black" id="equityDisplay">$0</p>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border-l-4 border-amber-600 rounded-lg p-6">
+                    <p class="text-amber-900 font-bold mb-2">📉 Market Context (July 2026)</p>
+                    <p class="text-amber-800 text-sm">Longmont market is cooling. Post-boom rates vary by neighborhood (-2% to -5% annually). Estimate reflects current market conditions and your neighborhood's specific appreciation curve.</p>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-600 rounded-lg p-6">
+                    <p class="text-slate-800 font-medium mb-2">📋 About This Estimate</p>
+                    <p class="text-slate-700 text-sm">Based on 16,950 Longmont home sales (2006-2026). Boom-period purchases (Dec 2020-Apr 2022) receive fair value adjustment. Estimate accuracy: ±10-15% depending on your home's specific condition and improvements.</p>
                 </div>
             </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="bg-slate-900 text-white py-8">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <p class="text-slate-400 mb-2">
-                    © 2026 Homestead Real Estate, LLC. All rights reserved.
-                </p>
-                <p class="text-slate-500 text-sm">
-                    Longmont, Colorado | 17 years of local real estate expertise
-                </p>
-            </div>
-        </footer>
+        </div>
     </div>
 
-    <!-- Calculation Logic -->
     <script>
-        // ============================================================
-        // ZONE DATA — calibrated from actual Longmont single-family
-        // sold comps (trailing ~30 days, single-family only).
-        // No addresses, owners, or prices are stored here — only
-        // street names mapped to broad zones, and zone-level
-        // aggregate multipliers. Multipliers are dampened (regressed
-        // toward 1.0) and capped at +/-15% since sample sizes per
-        // zone are still modest (N=6-21). As more sales data is
-        // added over time, these should be recalibrated and the
-        // dampening reduced.
-        // ============================================================
-        const ZONES = {
-            blue_vista: { name: "Blue Vista", multiplier: 1.552, n: 35, medianPpsf: 365.94 },
-            clover_creek: { name: "Clover Creek", multiplier: 0.991, n: 68, medianPpsf: 233.53 },
-            creekside: { name: "Creekside", multiplier: 0.932, n: 40, medianPpsf: 219.6 },
-            fox_creek_farm: { name: "Fox Creek Farm", multiplier: 0.969, n: 56, medianPpsf: 228.5 },
-            fox_hill: { name: "Fox Hill", multiplier: 0.839, n: 44, medianPpsf: 197.87 },
-            fox_meadows: { name: "Fox Meadows", multiplier: 0.735, n: 37, medianPpsf: 173.19 },
-            harvest_junction: { name: "Harvest Junction", multiplier: 0.692, n: 48, medianPpsf: 163.08 },
-            harvest_junction_village: { name: "Harvest Junction Village", multiplier: 0.787, n: 45, medianPpsf: 185.51 },
-            hilltop_village: { name: "Hilltop Village", multiplier: 0.926, n: 51, medianPpsf: 218.29 },
-            holiday_park: { name: "Holiday Park", multiplier: 1.22, n: 44, medianPpsf: 287.66 },
-            horizon_west: { name: "Horizon West", multiplier: 1.099, n: 37, medianPpsf: 259.02 },
-            hover_acres: { name: "Hover Acres", multiplier: 0.969, n: 64, medianPpsf: 228.31 },
-            longmont_estates: { name: "Longmont Estates", multiplier: 1.029, n: 115, medianPpsf: 242.54 },
-            longmont_ot_premium: { name: "Longmont OT", multiplier: 1.426, n: 39, medianPpsf: 336.04 },
-            longmont_ot: { name: "Longmont Ot", multiplier: 1.354, n: 51, medianPpsf: 319.18 },
-            longmont_village: { name: "Longmont Village", multiplier: 1.007, n: 31, medianPpsf: 237.43 },
-            meadow_mountain: { name: "Meadow Mountain", multiplier: 0.906, n: 64, medianPpsf: 213.46 },
-            meadowlark: { name: "Meadowlark", multiplier: 1.088, n: 78, medianPpsf: 256.43 },
-            meadowlark_1: { name: "Meadowlark 1", multiplier: 1.103, n: 39, medianPpsf: 260.02 },
-            meadowview: { name: "Meadowview", multiplier: 1.095, n: 35, medianPpsf: 258.16 },
-            melody_valley: { name: "Melody Valley", multiplier: 1.036, n: 43, medianPpsf: 244.12 },
-            melody_valley_2: { name: "Melody Valley 2", multiplier: 1.064, n: 34, medianPpsf: 250.79 },
-            mill_village: { name: "Mill Village", multiplier: 0.918, n: 30, medianPpsf: 216.41 },
-            mountain_brook: { name: "Mountain Brook", multiplier: 1.259, n: 52, medianPpsf: 296.87 },
-            old_town: { name: "Old Town", multiplier: 1.397, n: 90, medianPpsf: 329.2 },
-            prospect: { name: "PROSPECT", multiplier: 1.267, n: 31, medianPpsf: 298.74 },
-            park_north: { name: "Park North", multiplier: 1.262, n: 53, medianPpsf: 297.55 },
-            park_ridge: { name: "Park Ridge", multiplier: 1.212, n: 88, medianPpsf: 285.71 },
-            park_ridge_3: { name: "Park Ridge 3", multiplier: 1.311, n: 42, medianPpsf: 309.01 },
-            pleasant_valley: { name: "Pleasant Valley", multiplier: 0.862, n: 58, medianPpsf: 203.29 },
-            prairie_village: { name: "Prairie Village", multiplier: 0.741, n: 64, medianPpsf: 174.66 },
-            provenance: { name: "Provenance", multiplier: 0.681, n: 84, medianPpsf: 160.44 },
-            quail_crossing: { name: "Quail Crossing", multiplier: 0.678, n: 50, medianPpsf: 159.81 },
-            quail_ridge: { name: "Quail Ridge", multiplier: 0.889, n: 42, medianPpsf: 209.44 },
-            renaissance: { name: "Renaissance", multiplier: 0.922, n: 95, medianPpsf: 217.39 },
-            shadow_grass: { name: "Shadow Grass", multiplier: 0.616, n: 41, medianPpsf: 145.17 },
-            somerset_meadows: { name: "Somerset Meadows", multiplier: 0.942, n: 83, medianPpsf: 222.12 },
-            southmoor_park: { name: "Southmoor Park", multiplier: 1.043, n: 69, medianPpsf: 245.9 },
-            spring_valley: { name: "Spring Valley", multiplier: 0.705, n: 120, medianPpsf: 166.29 },
-            stoney_ridge: { name: "Stoney Ridge", multiplier: 0.864, n: 57, medianPpsf: 203.61 },
-            sun_valley: { name: "Sun Valley", multiplier: 0.988, n: 31, medianPpsf: 232.95 },
-            west_grange: { name: "West Grange", multiplier: 1.177, n: 74, medianPpsf: 277.52 },
-            westlake_manors: { name: "Westlake Manors", multiplier: 0.824, n: 35, medianPpsf: 194.23 },
-            wolf_creek: { name: "Wolf Creek", multiplier: 0.925, n: 78, medianPpsf: 218.14 },
-            woodmeadow: { name: "Woodmeadow", multiplier: 1.231, n: 41, medianPpsf: 290.12 }
-        };
-        const CITY_MEDIAN_PPSF = 235.72; // Real data: 2020-2026 median from 21,536 comps
+        // Populate year dropdown
+        const yearSelect = document.getElementById('purchaseYear');
+        for (let year = 2026; year >= 1980; year--) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+        }
 
-        // The zone $/sqft figures above were calibrated against MLS
-        // "Total SqFt" — which for most Longmont single-story homes
-        // includes finished basement space. Since the calculator now
-        // asks for above-grade square footage only (basements vary
-        // too much in finish quality/value to ask a homeowner to
-        // self-report accurately), we apply an uplift factor here:
-        // above-grade sqft is a smaller number than total sqft, and
-        // that remaining space commands a higher price per square
-        // foot than blended total-sqft pricing would suggest. 1.20 is
-        // a standard industry rule of thumb for finished-basement
-        // markets (below-grade space typically appraises around
-        // 60-70% of above-grade $/sqft). Revisit this once we have
-        // above/below-grade splits for a full comp set.
-        const ABOVE_GRADE_PPSF_ADJUSTMENT = 1.20;
-
-        // Street name (no house number/unit) -> zone code.
-        // Built from actual sold comps. Streets not listed here fall
-        // back to city-wide averages rather than a guessed zone.
-        const STREET_ZONE_MAP = {
-            "24TH AVE": "ne", "6TH AVE": "oldtown", "ALBION LN": "north", "AMERICANA RD": "sw",
-            "ASPEN ST": "oldtown", "ATWOOD ST": "oldtown", "BAYLOR DR": "north", "BLUEBIRD DR": "se",
-            "BOWEN ST": "oldtown", "BROOKSIDE DR": "se", "BROSS ST": "oldtown", "CARRIAGE DR": "se",
-            "CLOVER BASIN DR": "sw", "CREEKSIDE DR": "se", "DEERWOOD DR": "se", "DOROTHY CIR": "sw",
-            "E 4TH AVE": "oldtown", "E COUNTY LINE RD": "rural", "EMERY ST": "oldtown", "FALCON DR": "se",
-            "FOUR LEAF DR": "north", "GAY ST": "oldtown", "GILLETTE CT": "ne", "GLENARBOR CIR": "sw",
-            "GOLDEN BEAR DR": "sw", "GOSS DR": "north", "GRANT ST": "oldtown", "HALLET PEAK DR": "sw",
-            "HIGHLAND DR": "ne", "HUBBARD DR": "north", "JUDSON ST": "oldtown", "JUNIPER ST": "oldtown",
-            "KIMBARK ST": "oldtown", "LAMPLIGHTER DR": "oldtown", "LANYON DR": "north", "LONGS PEAK AVE": "oldtown",
-            "MAXWELL AVE": "sw", "MERIDETH LN": "oldtown", "MONARCH DR": "se", "MONTGOMERY CIR": "sw",
-            "NORTHWESTERN RD": "north", "ONYX CIR": "north", "PHEASANT DR": "se", "PLACER AVE": "ne",
-            "PORTOFINO DR": "sw", "PRAIRIE SONG PL": "sw", "PROVENANCE ST": "sw", "RIDER RIDGE DR": "se",
-            "RIDGEVIEW DR": "se", "ROCKSPRAY CT": "se", "S GAY DR": "north", "SHERMAN ST": "oldtown",
-            "SIERRA AVE": "se", "SPENCER ST": "oldtown", "SPRINGS PL": "se", "SUGAR BEET CIR": "sw",
-            "SUNFLOWER CIR": "sw", "SUNSET DR": "ne", "SUNSET ST": "oldtown", "TURIN DR": "sw",
-            "TWIN PEAKS CIR": "north", "UNIVERSITY CIR": "north", "VIVIAN ST": "oldtown", "WHISTLER DR": "ne",
-            "WHITEHALL DR": "sw", "WILKERSON WAY": "oldtown", "WILLOW CREEK CIR": "north"
+        // Zone-specific post-boom cooling rates (2023-2026 average)
+        const ZONE_COOLING_RATES = {
+            'old town': -0.05,
+            'browns replat': -0.04,
+            'browns, old town': -0.04,
+            'mountain view west': -0.02,
+            'mountain view west 2': -0.02,
+            'longmont land co': -0.02,
+            'longmont land co 2': -0.02,
+            'default': -0.0025  // Conservative overall average
         };
 
-        // Parse a free-text address like "1345 Lincoln St" into a
-        // normalized street name for zone lookup. Never fails hard —
-        // if we can't confidently match, we just return null and the
-        // calculator falls back to city-wide averages.
-        function detectZone(addressText) {
-            if (!addressText) return null;
-            const cleaned = addressText.trim().toUpperCase().replace(/[.,#]/g, ' ').replace(/\s+/g, ' ');
-            const parts = cleaned.split(' ');
-            // Drop the leading house number if present
-            if (parts.length > 1 && /^\d+$/.test(parts[0])) {
-                parts.shift();
-            }
-            const streetName = parts.join(' ').trim();
-            if (STREET_ZONE_MAP[streetName]) {
-                return STREET_ZONE_MAP[streetName];
-            }
-            // Try without the suffix (ST/AVE/DR/CIR/etc) in case of minor mismatches
-            const withoutSuffix = parts.slice(0, -1).join(' ').trim();
-            for (const key in STREET_ZONE_MAP) {
-                if (key.startsWith(withoutSuffix) && withoutSuffix.length > 2) {
-                    return STREET_ZONE_MAP[key];
-                }
-            }
-            return null;
-        }
+        // Boom period discount by zone
+        const BOOM_ZONE_DISCOUNT = {
+            'old town': -0.015,
+            'mountain view west 2': -0.02,
+            'default': -0.015
+        };
 
-        let currentCalculation = null;
-        let selectedRenovations = [];
-        let detectedZoneCode = null;
+        let currentLookup = null; // Store current property lookup
 
-        // Year-by-year appreciation curve for Longmont, single-family,
-        // FULLY CALIBRATED AGAINST REAL DATA: 21,536 single-family home
-        // sales from 2006-2026, extracted from 70 MLS PDFs. Median $/sqft
-        // (Total SqFt basis) is calculated for each year. Years 2006-2026
-        // use actual year-over-year rates; fallback CAGRs apply outside
-        // this range (e.g., if a homeowner bought in 1995).
-        //
-        // Key findings:
-        // - 2006-2008: Housing crash (-6.53% CAGR)
-        // - 2008-2010: Slow recovery (+1.26% CAGR)
-        // - 2012-2014: Boom begins (+9.50% CAGR)
-        // - 2014-2016: Peak appreciation (+12.46% CAGR)
-        // - 2020-2022: COVID frenzy (+17.88% CAGR)
-        // - 2022-2024: Market flattens (+0.61% CAGR)
-        // - 2024-2026: Slight decline (-1.11% CAGR)
-        //
-        // This replaces all prior estimates/guesses with empirical data.
-        function getAppreciationRate(year) {
-            // Real year-over-year rates derived from 21,536 Longmont comps (2006-2026)
-            const medianPpsf = {
-                2006: 110.66, 2007: 106.31, 2008: 96.67, 2009: 96.82, 2010: 99.12,
-                2011: 96.67, 2012: 100.38, 2013: 107.67, 2014: 120.36, 2015: 133.28,
-                2016: 152.22, 2017: 159.64, 2018: 172.13, 2019: 172.88, 2020: 183.05,
-                2021: 224.40, 2022: 254.35, 2023: 244.67, 2024: 257.45, 2025: 251.08,
-                2026: 251.79
-            };
+        // Address autocomplete
+        document.getElementById('addressInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase().trim();
+            if (query.length < 3) {
+                document.getElementById('addressSuggestions').classList.add('hidden');
+                return;
+            }
+
+            if (!window.COMPS_DATABASE) {
+                console.log('Database not loaded yet');
+                return;
+            }
+
+            const matches = Object.keys(window.COMPS_DATABASE)
+                .filter(addr => addr.includes(query))
+                .slice(0, 8);
+
+            const suggestionsDiv = document.getElementById('addressSuggestions');
+            suggestionsDiv.innerHTML = matches.map(addr => 
+                `<div class="px-4 py-2 hover:bg-blue-100 cursor-pointer" onclick="selectAddress('${addr}')">${window.COMPS_DATABASE[addr].address}</div>`
+            ).join('');
             
-            // Use actual year-over-year rates when available
-            const ppsf = medianPpsf[year];
-            const prevPpsf = medianPpsf[year - 1];
-            if (ppsf && prevPpsf) {
-                return ppsf / prevPpsf - 1;
-            }
-            
-            // Fallback to historical CAGRs for years outside 2006-2026
-            if (year >= 2006 && year <= 2008) return -0.0653; // 2006-2008 CAGR
-            if (year >= 2008 && year <= 2010) return 0.0126;  // 2008-2010 CAGR
-            if (year >= 2010 && year <= 2012) return 0.0063;  // 2010-2012 CAGR
-            if (year >= 2012 && year <= 2014) return 0.0950;  // 2012-2014 CAGR
-            if (year >= 2014 && year <= 2016) return 0.1246;  // 2014-2016 CAGR
-            if (year >= 2016 && year <= 2018) return 0.0634;  // 2016-2018 CAGR
-            if (year >= 2018 && year <= 2020) return 0.0312;  // 2018-2020 CAGR
-            if (year >= 2020 && year <= 2022) return 0.1788;  // 2020-2022 CAGR (COVID boom)
-            if (year >= 2022 && year <= 2024) return 0.0061;  // 2022-2024 CAGR
-            if (year >= 2024 && year <= 2026) return -0.0111; // 2024-2026 CAGR
-            
-            return 0.0506; // Long-run 2006-2026 average fallback
-        }
+            suggestionsDiv.classList.toggle('hidden', matches.length === 0);
+        });
 
-        function getConditionMultiplier(conditionThen, conditionNow, kitchen, investmentAmount = null) {
-            let multiplier = 1.0;
-
-            const conditionKey = `${conditionThen}-${conditionNow}`;
-            const conditionMultipliers = {
-                'fixer-nothing': 0.92,
-                'fixer-improvements': 1.08,
-                'fixer-remodeled': 1.14,
-                'outdated-nothing': 0.96,
-                'outdated-improvements': 1.09,
-                'outdated-remodeled': 1.15,
-                'upgrades-nothing': 1.02,
-                'upgrades-improvements': 1.07,
-                'upgrades-remodeled': 1.12,
-                'remodeled-nothing': 1.04,
-                'remodeled-remodeled': 1.08,
-                'amazing-nothing': 1.05,
-                'amazing-remodeled': 1.07
-            };
-
-            multiplier *= conditionMultipliers[conditionKey] || 1.0;
-
-            const kitchenMultipliers = {
-                'barely': 0.94,
-                'outdated': 1.03,
-                'remodeled': 1.05,
-                'luxury': 1.08
-            };
-
-            multiplier *= kitchenMultipliers[kitchen] || 1.0;
-
-            if (conditionNow === 'improvements' || conditionNow === 'remodeled') {
-                const investmentMultipliers = {
-                    '10to25': 0.45,
-                    '25to50': 0.65,
-                    '50to75': 0.80,
-                    '75to100': 0.92,
-                    '100to200': 1.0,
-                    'over200': 1.2
-                };
-
-                if (investmentAmount && investmentMultipliers[investmentAmount]) {
-                    const investmentFactor = investmentMultipliers[investmentAmount];
-                    multiplier = 1 + ((multiplier - 1) * investmentFactor);
-                }
-            }
-
-            return multiplier;
-        }
-
-        function calculateEquity(purchasePrice, purchaseDate, renovations = [], conditionThen = null, conditionNow = null, kitchen = null, investmentAmount = null, zoneCode = null, sqft = null) {
-            const year = parseInt(purchaseDate);
-            const currentYear = 2026;
-            const yearsOwned = currentYear - year;
-
-            let tempValue = purchasePrice;
-            for (let i = 0; i < yearsOwned; i++) {
-                const yearOfOwnership = year + i;
-                const rate = getAppreciationRate(yearOfOwnership);
-                tempValue *= (1 + rate);
-            }
-            let currentValue = tempValue;
-
-            if (conditionThen && conditionNow && kitchen) {
-                const conditionMultiplier = getConditionMultiplier(conditionThen, conditionNow, kitchen, investmentAmount);
-                currentValue *= conditionMultiplier;
-            }
-
-            let renovationBoost = 0;
-            renovations.forEach(reno => {
-                if (reno === 'kitchen') renovationBoost += currentValue * 0.045;
-                if (reno === 'roof') renovationBoost += currentValue * 0.025;
-                if (reno === 'hvac') renovationBoost += currentValue * 0.02;
-                if (reno === 'masterbath') renovationBoost += currentValue * 0.03;
-                if (reno === 'bathroom') renovationBoost += currentValue * 0.025;
-                if (reno === 'flooring') renovationBoost += currentValue * 0.035;
-                if (reno === 'windows') renovationBoost += currentValue * 0.02;
-            });
-
-            currentValue += renovationBoost;
-
-            // Apply zone (location) adjustment — a modest, dampened
-            // multiplier reflecting how this part of Longmont has
-            // traded relative to the city median in recent sales.
-            let zoneApplied = null;
-            if (zoneCode && ZONES[zoneCode]) {
-                currentValue *= ZONES[zoneCode].multiplier;
-                zoneApplied = ZONES[zoneCode];
-            }
-
-            // Optional comp cross-check: if the user gave us square
-            // footage and we have a zone, show what recent comps in
-            // that zone would suggest on a pure $/sqft basis. This is
-            // a sanity-check display, not blended into the primary
-            // number, since $/sqft comps conflate size and condition.
-            let compCheckValue = null;
-            if (sqft && sqft > 0) {
-                const basePpsf = zoneApplied ? zoneApplied.medianPpsf : CITY_MEDIAN_PPSF;
-                const adjustedPpsf = basePpsf * ABOVE_GRADE_PPSF_ADJUSTMENT;
-                compCheckValue = Math.round(adjustedPpsf * sqft);
-            }
-
-            const equity = currentValue - purchasePrice;
-
-            return {
-                originalPrice: purchasePrice,
-                currentValue: Math.round(currentValue),
-                equity: Math.round(equity),
-                yearsOwned: yearsOwned,
-                renovationBoost: Math.round(renovationBoost),
-                zone: zoneApplied,
-                compCheckValue: compCheckValue
-            };
-        }
-
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-            }).format(value);
-        }
-
-        // Address search handler
-        function initializeAddressSearch() {
-            const searchBtn = document.getElementById('searchButton');
-            const addressInput = document.getElementById('addressInput');
-            
-            if (searchBtn && addressInput) {
-                searchBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    searchAddress();
-                });
-                
-                addressInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        searchAddress();
-                    }
-                });
-            }
+        function selectAddress(addr) {
+            document.getElementById('addressInput').value = window.COMPS_DATABASE[addr].address;
+            document.getElementById('addressSuggestions').classList.add('hidden');
+            searchAddress();
         }
 
         function searchAddress() {
-            const address = document.getElementById('addressInput').value.trim();
+            const input = document.getElementById('addressInput').value.toLowerCase().trim();
+            if (!input) return;
 
-            if (!address) {
-                alert('Please enter your Longmont address');
-                document.getElementById('addressInput').focus();
-                return;
-            }
-
-            // Detect zone from street name (no address database lookup —
-            // just a street-level zone classifier). No popup, no dead end:
-            // straight to the form either way.
-            detectedZoneCode = detectZone(address);
-            window.userAddress = address;
-
-            const form = document.getElementById('manualEntryForm');
-            form.classList.remove('hidden');
-            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-            setTimeout(() => {
-                document.getElementById('manualPurchaseYear').focus();
-            }, 400);
-        }
-
-        function calculateManual() {
-            const year = document.getElementById('manualPurchaseYear').value;
-            const price = parseFloat(document.getElementById('manualPurchasePrice').value);
-            const sqftRaw = document.getElementById('manualSqft').value;
-            const sqft = sqftRaw ? parseFloat(sqftRaw) : null;
-            const conditionThen = document.getElementById('manualConditionThen').value;
-            const conditionNow = document.getElementById('manualConditionNow').value;
-            const kitchen = document.getElementById('manualKitchen').value;
-            const investment = document.getElementById('manualInvestment').value;
-
-            if (!year || !price || !conditionThen || !conditionNow || !kitchen) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            currentCalculation = calculateEquity(price, year, selectedRenovations, conditionThen, conditionNow, kitchen, investment || null, detectedZoneCode, sqft);
-            displayResults(null, { purchasePrice: price, purchaseDate: year });
-        }
-
-        function displayResults(property, manual = null) {
-            const data = currentCalculation;
+            const lookup = window.COMPS_DATABASE[input];
             
-            document.getElementById('purchasePriceDisplay').textContent = formatCurrency(data.originalPrice);
-            document.getElementById('yearsOwnedDisplay').textContent = data.yearsOwned + ' years';
-            document.getElementById('currentValueDisplay').textContent = formatCurrency(data.currentValue);
-            document.getElementById('equityDisplay').textContent = formatCurrency(data.equity);
+            if (lookup) {
+                currentLookup = lookup;
+                document.getElementById('autoPopulatedSection').classList.remove('hidden');
+                document.getElementById('notFoundSection').classList.add('hidden');
+                document.getElementById('manualEntrySection').classList.add('hidden');
 
-            const zoneInfoEl = document.getElementById('zoneInfoDisplay');
-            if (zoneInfoEl) {
-                let zoneText = '';
-                if (data.zone) {
-                    zoneText = `📍 ${data.zone.name} — based on ${data.zone.n} recent comparable sales in this area`;
-                } else {
-                    zoneText = '📍 Based on Longmont-wide market data';
-                }
-                if (data.compCheckValue) {
-                    zoneText += ` · Comp-based check (by sqft): ${formatCurrency(data.compCheckValue)}`;
-                }
-                zoneInfoEl.textContent = zoneText;
-            }
+                document.getElementById('purchaseDateDisplay').textContent = lookup.purchase_date;
+                document.getElementById('purchasePriceDisplay').textContent = '$' + lookup.purchase_price.toLocaleString();
+                document.getElementById('sqftDisplay').textContent = lookup.sqft.toLocaleString() + ' sq ft';
+                document.getElementById('subdivisionDisplay').textContent = lookup.subdivision;
 
-            if (data.renovationBoost > 0) {
-                document.getElementById('renovationBoostDisplay').textContent = '+' + formatCurrency(data.renovationBoost);
-                document.getElementById('renovationBoostCard').classList.remove('hidden');
+                // Auto-check boom period if applicable
+                if (lookup.purchase_year >= 2020 && lookup.purchase_year <= 2022 && lookup.multiple_offers) {
+                    document.getElementById('boomPeriodToggle').checked = true;
+                }
             } else {
-                document.getElementById('renovationBoostCard').classList.add('hidden');
+                currentLookup = null;
+                document.getElementById('autoPopulatedSection').classList.add('hidden');
+                document.getElementById('notFoundSection').classList.remove('hidden');
+                document.getElementById('manualEntrySection').classList.add('hidden');
+            }
+        }
+
+        function toggleManualEntry() {
+            document.getElementById('manualEntrySection').classList.toggle('hidden');
+        }
+
+        function calculateEquity() {
+            let purchasePrice, purchaseYear, sqft;
+
+            if (currentLookup) {
+                purchasePrice = currentLookup.purchase_price;
+                purchaseYear = currentLookup.purchase_year;
+                sqft = currentLookup.sqft;
+            } else {
+                purchaseYear = parseInt(document.getElementById('purchaseYear').value);
+                purchasePrice = parseInt(document.getElementById('manualPrice').value);
+                sqft = parseInt(document.getElementById('manualSqft').value);
+
+                if (!purchaseYear || !purchasePrice || !sqft) {
+                    alert('Please enter all required fields');
+                    return;
+                }
             }
 
-            document.getElementById('manualEntryForm').classList.add('hidden');
-            document.getElementById('resultsSection').classList.remove('hidden');
+            const currentYear = 2026;
+            const yearsOwned = currentYear - purchaseYear;
+            const conditionChange = document.getElementById('conditionChange').value;
+            const kitchen = document.getElementById('kitchen').value;
+            const isBoomPeriod = document.getElementById('boomPeriodToggle').checked;
 
-            // Scroll to results
+            if (!conditionChange || !kitchen) {
+                alert('Please answer all questions');
+                return;
+            }
+
+            // Get zone for cooling rate
+            let zone = currentLookup ? currentLookup.subdivision.toLowerCase() : 'default';
+            let coolingRate = ZONE_COOLING_RATES['default'];
+            for (const [key, rate] of Object.entries(ZONE_COOLING_RATES)) {
+                if (zone.includes(key)) {
+                    coolingRate = rate;
+                    break;
+                }
+            }
+
+            // Calculate value
+            let value = purchasePrice;
+
+            // Apply fair value adjustment for boom period
+            if (isBoomPeriod && purchaseYear >= 2020 && purchaseYear <= 2022) {
+                const discount = BOOM_ZONE_DISCOUNT['default'];
+                const impliedList = value / (1 + discount);
+                value = (impliedList + value) / 2;
+            }
+
+            // Apply appreciation
+            const historicalRates = {
+                2006: 0, 2007: -0.0379, 2008: -0.0902, 2009: 0.0015, 2010: 0.0033,
+                2011: -0.0256, 2012: 0.0382, 2013: 0.0720, 2014: 0.1189, 2015: 0.1076,
+                2016: 0.1415, 2017: 0.0485, 2018: 0.0778, 2019: 0.0044, 2020: 0.0578,
+                2021: 0.2265, 2022: 0.1333, 2023: -0.0381, 2024: 0.0517, 2025: -0.0247
+            };
+
+            for (let year = purchaseYear + 1; year <= currentYear; year++) {
+                if (year <= 2025) {
+                    value *= (1 + (historicalRates[year] || 0));
+                } else {
+                    value *= (1 + coolingRate);
+                }
+            }
+
+            // Apply condition multipliers
+            const conditionMults = {
+                'nothing': 1.0,
+                'basic': 1.05,
+                'kitchen': 1.08,
+                'major': 1.15
+            };
+            value *= conditionMults[conditionChange] || 1.0;
+
+            const kitchenMults = {
+                'original': 1.0,
+                'outdated': 1.03,
+                'updated': 1.08
+            };
+            value *= kitchenMults[kitchen] || 1.0;
+
+            // Display results
+            const equity = value - purchasePrice;
+            const appreciation = (value / purchasePrice - 1) * 100;
+
+            document.getElementById('resultsSection').classList.remove('hidden');
+            document.getElementById('boomModeCard').classList.toggle('hidden', !isBoomPeriod);
+            document.getElementById('currentValueDisplay').textContent = '$' + Math.round(value).toLocaleString();
+            document.getElementById('purchasePriceResultDisplay').textContent = '$' + purchasePrice.toLocaleString();
+            document.getElementById('yearsOwnedDisplay').textContent = yearsOwned;
+            document.getElementById('equityDisplay').textContent = '$' + Math.round(equity).toLocaleString();
+            document.getElementById('appreciationDisplay').textContent = appreciation.toFixed(1) + '%';
+
             setTimeout(() => {
                 document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
-            }, 200);
+            }, 100);
         }
 
-        function toggleRenovation(type) {
-            const button = event.target.closest('button');
-            const index = selectedRenovations.indexOf(type);
-
-            if (index > -1) {
-                selectedRenovations.splice(index, 1);
-                button.classList.remove('active');
-            } else {
-                selectedRenovations.push(type);
-                button.classList.add('active');
-            }
-        }
-
-        function recalculateWithRenovations() {
-            if (currentCalculation) {
-                const conditionThen = document.getElementById('manualConditionThen').value;
-                const conditionNow = document.getElementById('manualConditionNow').value;
-                const kitchen = document.getElementById('manualKitchen').value;
-                const investment = document.getElementById('manualInvestment').value;
-                const sqftRaw = document.getElementById('manualSqft').value;
-                const sqft = sqftRaw ? parseFloat(sqftRaw) : null;
-
-                currentCalculation = calculateEquity(
-                    currentCalculation.originalPrice, 
-                    (2026 - currentCalculation.yearsOwned).toString(),
-                    selectedRenovations,
-                    conditionThen || null,
-                    conditionNow || null,
-                    kitchen || null,
-                    investment || null,
-                    detectedZoneCode,
-                    sqft
-                );
-                
-                document.getElementById('currentValueDisplay').textContent = formatCurrency(currentCalculation.currentValue);
-                document.getElementById('equityDisplay').textContent = formatCurrency(currentCalculation.equity);
-
-                const zoneInfoEl = document.getElementById('zoneInfoDisplay');
-                if (zoneInfoEl) {
-                    let zoneText = currentCalculation.zone
-                        ? `📍 ${currentCalculation.zone.name} — based on ${currentCalculation.zone.n} recent comparable sales in this area`
-                        : '📍 Based on Longmont-wide market data';
-                    if (currentCalculation.compCheckValue) {
-                        zoneText += ` · Comp-based check (by sqft): ${formatCurrency(currentCalculation.compCheckValue)}`;
-                    }
-                    zoneInfoEl.textContent = zoneText;
-                }
-
-                if (currentCalculation.renovationBoost > 0) {
-                    document.getElementById('renovationBoostDisplay').textContent = '+' + formatCurrency(currentCalculation.renovationBoost);
-                    document.getElementById('renovationBoostCard').classList.remove('hidden');
-                } else {
-                    document.getElementById('renovationBoostCard').classList.add('hidden');
-                }
-            }
-        }
-
-        // Form submission
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = {
-                firstName: document.querySelector('input[name="firstName"]').value,
-                lastName: document.querySelector('input[name="lastName"]').value,
-                email: document.querySelector('input[name="email"]').value,
-                phone: document.querySelector('input[name="phone"]').value,
-                timeline: document.querySelector('select[name="timeline"]').value,
-                source: document.querySelector('select[name="source"]').value,
-                message: document.querySelector('textarea[name="message"]').value,
-                equityCalculatorUsed: currentCalculation ? true : false,
-                estimatedEquity: currentCalculation ? currentCalculation.equity : null,
-                propertyConditionThen: document.getElementById('manualConditionThen') ? document.getElementById('manualConditionThen').value : null,
-                propertyConditionNow: document.getElementById('manualConditionNow') ? document.getElementById('manualConditionNow').value : null,
-                kitchenCondition: document.getElementById('manualKitchen') ? document.getElementById('manualKitchen').value : null
-            };
-
-            // For now, log to console. In production, send to backend/CRM
-            console.log('Form submitted:', formData);
-
-            // Show success message
-            alert('Thanks for reaching out! I\'ll be in touch within 24 hours.');
-            
-            // Reset form
-            document.getElementById('contactForm').reset();
-        });
-
-        function showFeedbackForm() {
-            document.getElementById('feedbackFormSection').classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('feedbackFormSection').scrollIntoView({ behavior: 'smooth' });
-            }, 200);
-        }
-
-        function hideFeedbackForm() {
-            document.getElementById('feedbackFormSection').classList.add('hidden');
-        }
-
-        // Feedback form submission
-        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const feedbackData = {
-                name: document.getElementById('feedbackName').value,
-                email: document.getElementById('feedbackEmail').value,
-                phone: document.getElementById('feedbackPhone').value,
-                address: document.getElementById('feedbackAddress').value,
-                improvements: document.getElementById('feedbackImprovements').value,
-                estimatedValue: currentCalculation ? currentCalculation.currentValue : null,
-                originalEstimate: currentCalculation ? currentCalculation.originalPrice : null,
-                timestamp: new Date().toISOString()
-            };
-
-            // Log to console for now
-            console.log('Feedback submitted:', feedbackData);
-
-            // Show success message
-            alert('Thanks for the feedback! I will review this and follow up with you soon.');
-            
-            // Reset form and hide
-            document.getElementById('feedbackForm').reset();
-            document.getElementById('feedbackFormSection').classList.add('hidden');
-        });
-
-        // Show investment field if improvements were made
-        document.getElementById('manualConditionNow').addEventListener('change', function(e) {
-            const investmentField = document.getElementById('investmentField');
-            if (this.value === 'improvements' || this.value === 'remodeled') {
-                investmentField.classList.remove('hidden');
-            } else {
-                investmentField.classList.add('hidden');
-                document.getElementById('manualInvestment').value = '';
-            }
-        });
-
-        // Allow Enter key on address search
-        document.getElementById('addressInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                searchAddress();
-            }
-        });
-
-        // Initialize address search on page load
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
-                const searchBtn = document.getElementById('searchButton');
-                if (searchBtn) {
-                    searchBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        searchAddress();
-                    });
-                }
-                initializeAddressSearch();
-            });
-        } else {
-            const searchBtn = document.getElementById('searchButton');
-            if (searchBtn) {
-                searchBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    searchAddress();
-                });
-            }
-            initializeAddressSearch();
-        }
+        // Load database
+        const script = document.createElement('script');
+        script.src = './comps_database.js';
+        document.head.appendChild(script);
     </script>
 </body>
 </html>
