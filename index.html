@@ -215,11 +215,24 @@
 
                 <!-- Results Display -->
                 <div id="resultsSection" class="hidden">
-                    <!-- Main Equity Card -->
+                    <!-- Main Equity Card with Range -->
                     <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl shadow-2xl p-8 mb-8 border-2 border-emerald-300">
-                        <p class="text-slate-600 text-sm font-medium mb-2">Your Estimated Home Value Today</p>
-                        <div class="flex items-baseline gap-2 mb-6">
-                            <span class="text-6xl sm:text-7xl font-black text-emerald-700 equity-number" id="currentValueDisplay">$0</span>
+                        <p class="text-slate-600 text-sm font-medium mb-4">Your Estimated Home Value Range (July 2026)</p>
+                        
+                        <!-- Range Display -->
+                        <div class="grid grid-cols-3 gap-4 mb-8">
+                            <div class="bg-white rounded-xl p-4 border-2 border-slate-200">
+                                <p class="text-slate-600 text-xs font-semibold mb-2">Conservative</p>
+                                <p class="text-3xl font-black text-slate-900" id="conservativeDisplay">$0</p>
+                            </div>
+                            <div class="bg-emerald-600 text-white rounded-xl p-4 border-2 border-emerald-700 shadow-lg">
+                                <p class="text-emerald-100 text-xs font-semibold mb-2">Mid-Range</p>
+                                <p class="text-3xl font-black" id="midRangeDisplay">$0</p>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 border-2 border-slate-200">
+                                <p class="text-slate-600 text-xs font-semibold mb-2">Optimistic</p>
+                                <p class="text-3xl font-black text-slate-900" id="optimisticDisplay">$0</p>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4 mb-6">
@@ -234,7 +247,7 @@
                         </div>
 
                         <div class="bg-emerald-600 text-white rounded-xl p-6">
-                            <p class="text-emerald-100 text-sm font-medium mb-1">💰 Your Equity Built</p>
+                            <p class="text-emerald-100 text-sm font-medium mb-1">💰 Equity Built (Mid-Range)</p>
                             <p class="text-5xl font-black equity-number" id="equityDisplay">$0</p>
                         </div>
                     </div>
@@ -247,8 +260,14 @@
 
                     <!-- Info Text -->
                     <div class="bg-blue-50 border-l-4 border-blue-600 rounded-lg p-6 mb-8">
-                        <p class="text-slate-800 font-medium mb-2">📋 What You're Seeing</p>
-                        <p class="text-slate-700 text-sm">This is a professional estimate based on Longmont market appreciation since your purchase date. The actual value may vary based on specific property conditions, market timing, and local factors. Next steps? Let's connect to discuss your options.</p>
+                        <p class="text-slate-800 font-medium mb-2">📋 Understanding Your Range</p>
+                        <p class="text-slate-700 text-sm mb-3">We show three scenarios because real estate valuation includes uncertainty:</p>
+                        <ul class="text-slate-700 text-sm space-y-2 ml-4">
+                            <li><strong>Conservative:</strong> Market cools faster than expected, or your home's condition is stronger than we assessed</li>
+                            <li><strong>Mid-Range:</strong> Our best estimate based on 16,950 Longmont comps and current market trends</li>
+                            <li><strong>Optimistic:</strong> Market stabilizes faster, or buyer demand strengthens in your neighborhood</li>
+                        </ul>
+                        <p class="text-slate-700 text-sm mt-3">Most homes sell within this range. Next steps? Let's connect to discuss your specific situation.</p>
                     </div>
 
                     <!-- This Doesn't Look Right Button -->
@@ -805,10 +824,25 @@
         function displayResults(property, manual = null) {
             const data = currentCalculation;
             
+            // Calculate range: Conservative (-8%), Mid-Range (base), Optimistic (+8%)
+            const conservative = Math.round(data.currentValue * 0.92);
+            const midRange = Math.round(data.currentValue);
+            const optimistic = Math.round(data.currentValue * 1.08);
+            
+            const conservativeEquity = conservative - data.originalPrice;
+            const midRangeEquity = data.equity;
+            const optimisticEquity = optimistic - data.originalPrice;
+            
             document.getElementById('purchasePriceDisplay').textContent = formatCurrency(data.originalPrice);
             document.getElementById('yearsOwnedDisplay').textContent = data.yearsOwned + ' years';
-            document.getElementById('currentValueDisplay').textContent = formatCurrency(data.currentValue);
-            document.getElementById('equityDisplay').textContent = formatCurrency(data.equity);
+            
+            // Display range
+            document.getElementById('conservativeDisplay').textContent = formatCurrency(conservative);
+            document.getElementById('midRangeDisplay').textContent = formatCurrency(midRange);
+            document.getElementById('optimisticDisplay').textContent = formatCurrency(optimistic);
+            
+            // Display equity built (mid-range)
+            document.getElementById('equityDisplay').textContent = formatCurrency(midRangeEquity);
 
             if (data.renovationBoost > 0) {
                 document.getElementById('renovationBoostDisplay').textContent = '+' + formatCurrency(data.renovationBoost);
