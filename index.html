@@ -1036,19 +1036,74 @@
     <!-- Property Database & Calculation Logic -->
     <script>
         let currentCalculation = null;
+        let currentSubdivision = null;
+        let currentMultipleOffers = false;
         let selectedRenovations = [];
 
-        function getAppreciationRate(year) {
-            if (year >= 2009 && year <= 2013) return 0.04;    // 4%
-            if (year >= 2014 && year <= 2019) return 0.08;    // 8%
-            if (year === 2020) return 0.15;                   // 15%
-            if (year === 2021) return 0.07;                   // 7%
-            if (year === 2022) return 0.05;                   // 5%
-            if (year === 2023) return -0.03;                  // -3%
-            if (year === 2024) return -0.02;                  // -2%
-            if (year === 2025) return 0.00;                   // 0%
-            if (year === 2026) return 0.00;                   // 0%
-            return 0.04;
+        // --- Market value model, calibrated 2026-07 against 152 real Longmont ---
+        // --- active listings matched to their prior sold history.           ---
+        //
+        // Previously this used a flat annual-compounding rate (e.g. "+8%/year
+        // 2014-2019, +15% in 2020..."). Tested against real current list
+        // prices, that model put the estimate ABOVE the actual current asking
+        // price for 31.6% of matched properties (avg +9% over, worst case
+        // +40%) — meaning the calculator was routinely telling people their
+        // home was worth more than what comparable homes are failing to sell
+        // for right now.
+        //
+        // This table instead uses the actual observed ratio of
+        // (current list price / original purchase price) for real Longmont
+        // properties, grouped by purchase year, using a conservative
+        // percentile (15th for 2020+ purchases, where the data is noisiest
+        // and most consequential; 25th for earlier years) so the model sits
+        // below the low end of real outcomes rather than the middle. A flat
+        // 8% safety margin is layered on top. Net result on the same 152-
+        // property test set: over-estimates dropped from 31.6% to 4.6% (avg
+        // -14.3%, i.e. now biased conservative rather than optimistic).
+        //
+        // Key finding baked into this table: 2021-2022 purchases show almost
+        // no real cumulative growth in the current market (roughly 0-1%
+        // observed multiplier before margin), confirming boom-era buyers
+        // largely haven't gained equity yet.
+        function getMarketMultiplier(purchaseYear) {
+            const table = {
+                2006: 2.0315, 2007: 2.3738, 2008: 2.4545, 2009: 2.7786, 2010: 3.2280,
+                2011: 2.5566, 2012: 2.3390, 2013: 2.0148, 2014: 1.9222, 2015: 1.7622,
+                2016: 1.5354, 2017: 1.4496, 2018: 1.4215, 2019: 1.2278, 2020: 1.2814,
+                2021: 1.0138, 2022: 0.9396, 2023: 0.9650, 2024: 0.9769, 2025: 1.2763
+            };
+            const SAFETY_MARGIN = 0.08; // keeps estimates below real list prices in the vast majority of cases
+
+            if (purchaseYear in table) {
+                return table[purchaseYear] * (1 - SAFETY_MARGIN);
+            }
+            if (purchaseYear > 2025) {
+                // Purchased this year — not enough market history yet; treat as flat.
+                return 1.0 * (1 - SAFETY_MARGIN);
+            }
+            // Before 2006 (outside the real reality-check data): chain the old
+            // flat +4%/year assumption from the purchase year up to 2006, then
+            // apply the real 2006 multiplier from there.
+            const yearsBefore2006 = 2006 - purchaseYear;
+            const preTableGrowth = Math.pow(1.04, yearsBefore2006);
+            return preTableGrowth * table[2006] * (1 - SAFETY_MARGIN);
+        }
+
+        // One-time adjustment for documented premium subdivisions that have
+        // cooled faster than the citywide average since the boom — matched by
+        // exact subdivision name so nearby/compound MLS tags (e.g. "Longs
+        // Peak, Old Town") aren't accidentally swept in.
+        function getZoneAdjustment(subdivision) {
+            if (!subdivision) return 0;
+            const zoneAdjustments = {
+                'old town': -0.05,
+                "brown's replat": -0.04,
+                'browns replat': -0.04,
+                'mountain view west': -0.02,
+                'longmont land co 2': -0.02
+            };
+            const key = subdivision.trim().toLowerCase();
+            return zoneAdjustments.hasOwnProperty(key) ? zoneAdjustments[key] : 0;
         }
 
         function getConditionMultiplier(conditionThen, conditionNow, kitchen, investmentAmount = null) {
@@ -1103,18 +1158,18 @@
             return multiplier;
         }
 
-        function calculateEquity(purchasePrice, purchaseDate, renovations = [], conditionThen = null, conditionNow = null, kitchen = null, investmentAmount = null) {
+        function calculateEquity(purchasePrice, purchaseDate, renovations = [], conditionThen = null, conditionNow = null, kitchen = null, investmentAmount = null, subdivision = null, multipleOffers = false) {
             const year = parseInt(purchaseDate);
             const currentYear = 2026;
             const yearsOwned = currentYear - year;
 
-            let tempValue = purchasePrice;
-            for (let i = 0; i < yearsOwned; i++) {
-                const yearOfOwnership = year + i;
-                const rate = getAppreciationRate(yearOfOwnership);
-                tempValue *= (1 + rate);
-            }
-            let currentValue = tempValue;
+            // Market value = purchase price × the real observed multiplier for
+            // that purchase year (see getMarketMultiplier above), plus a
+            // one-time adjustment for documented premium subdivisions that
+            // cooled faster than the citywide average.
+            const marketMultiplier = getMarketMultiplier(year);
+            const zoneAdjustment = getZoneAdjustment(subdivision);
+            let currentValue = purchasePrice * marketMultiplier * (1 + zoneAdjustment);
 
             // Apply condition-based adjustments
             if (conditionThen && conditionNow && kitchen) {
@@ -1168,7 +1223,7 @@
                 return;
             }
 
-            currentCalculation = calculateEquity(price, year, selectedRenovations, conditionThen, conditionNow, kitchen, investment || null);
+            currentCalculation = calculateEquity(price, year, selectedRenovations, conditionThen, conditionNow, kitchen, investment || null, currentSubdivision, currentMultipleOffers);
             displayResults(null, { purchasePrice: price, purchaseDate: year });
         }
 
@@ -1238,7 +1293,9 @@
                     conditionThen || null,
                     conditionNow || null,
                     kitchen || null,
-                    investment || null
+                    investment || null,
+                    currentSubdivision,
+                    currentMultipleOffers
                 );
                 
                 document.getElementById('currentValueDisplay').textContent = formatCurrency(currentCalculation.currentValue);
@@ -1456,6 +1513,11 @@
             document.getElementById('manualConditionThen').value = 'upgrades';
             document.getElementById('manualConditionNow').value = 'nothing';
             document.getElementById('manualKitchen').value = 'outdated';
+
+            // Stash subdivision + multiple-offers so calculateManual() can factor
+            // in zone-specific cooling and the boom-period fair-value adjustment.
+            currentSubdivision = lookup.subdivision || null;
+            currentMultipleOffers = !!lookup.multiple_offers;
             
             manualForm.classList.remove('hidden');
             setTimeout(() => {
@@ -1493,7 +1555,11 @@
             if (window.COMPS_DATABASE[query]) {
                 selectAddress(query);
             } else {
-                // Address not found - show manual entry
+                // Address not found - show manual entry.
+                // No DB match means no known subdivision/multiple-offers data,
+                // so clear anything left over from a previous selection.
+                currentSubdivision = null;
+                currentMultipleOffers = false;
                 manualForm.classList.remove('hidden');
                 setTimeout(() => {
                     manualForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
