@@ -1065,21 +1065,37 @@
         // no real cumulative growth in the current market (roughly 0-1%
         // observed multiplier before margin), confirming boom-era buyers
         // largely haven't gained equity yet.
+        //
+        // NOTE on 2025: the raw sample-derived value here was 1.28 (a 4-
+        // listing sample, too small and noisy to trust) and got flagged as
+        // clearly wrong — recent purchases haven't had time to season and,
+        // per direct agent feedback, are not appreciating any faster than
+        // 2021-2024. Manually set to 0.98 to match that pattern instead of
+        // trusting the small sample. Revisit once more 2025 listings exist.
         function getMarketMultiplier(purchaseYear) {
             const table = {
                 2006: 2.0315, 2007: 2.3738, 2008: 2.4545, 2009: 2.7786, 2010: 3.2280,
                 2011: 2.5566, 2012: 2.3390, 2013: 2.0148, 2014: 1.9222, 2015: 1.7622,
                 2016: 1.5354, 2017: 1.4496, 2018: 1.4215, 2019: 1.2278, 2020: 1.2814,
-                2021: 1.0138, 2022: 0.9396, 2023: 0.9650, 2024: 0.9769, 2025: 1.2763
+                2021: 1.0138, 2022: 0.9396, 2023: 0.9650, 2024: 0.9769, 2025: 0.9800
             };
             const SAFETY_MARGIN = 0.08; // keeps estimates below real list prices in the vast majority of cases
 
+            // The safety margin exists to cover uncertainty that builds up over
+            // years of citywide drift. A purchase from the last ~year doesn't
+            // carry that uncertainty — the sale price itself IS current market
+            // evidence, not something to be second-guessed on top of. So the
+            // most recent purchase year (and this year) skip the margin and
+            // use the table value directly.
+            const RECENT_CUTOFF = 2025;
+
             if (purchaseYear in table) {
-                return table[purchaseYear] * (1 - SAFETY_MARGIN);
+                const margin = (purchaseYear >= RECENT_CUTOFF) ? 0 : SAFETY_MARGIN;
+                return table[purchaseYear] * (1 - margin);
             }
             if (purchaseYear > 2025) {
-                // Purchased this year — not enough market history yet; treat as flat.
-                return 1.0 * (1 - SAFETY_MARGIN);
+                // Purchased this year — not enough market history yet; treat as flat, no margin.
+                return 1.0;
             }
             // Before 2006 (outside the real reality-check data): chain the old
             // flat +4%/year assumption from the purchase year up to 2006, then
