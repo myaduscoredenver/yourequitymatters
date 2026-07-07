@@ -536,12 +536,35 @@
                 </button>
                 <div class="p-8 md:p-10">
                     <h2 class="text-3xl font-black text-slate-900 mb-2">Send James Your Proposal</h2>
-                    <p class="text-slate-600 mb-8">Tell me what you'd like to pay, and a bit about your situation. No pressure — this just starts the conversation.</p>
+                    <p class="text-slate-600 mb-6">Tell me what you'd like to pay, and a bit about your situation. No pressure — this just starts the conversation.</p>
+
+                    <!-- Visible proposal summary — pulled from the sliders, shown before submission -->
+                    <div class="bg-cyan-50 border-2 border-cyan-300 rounded-2xl p-6 mb-8">
+                        <p class="text-xs font-bold text-cyan-700 uppercase tracking-wide mb-3">Your Proposal</p>
+                        <div class="grid grid-cols-2 gap-y-2 text-sm">
+                            <span class="text-slate-700">Estimated Home Value</span>
+                            <span class="text-right font-bold text-slate-900" id="modalHomeValue">$0</span>
+
+                            <span class="text-slate-700">My Commission (Listing Agent)</span>
+                            <span class="text-right font-bold text-slate-900" id="modalListingLine">0.0% — $0</span>
+
+                            <span class="text-slate-700">Buyer's Agent Commission</span>
+                            <span class="text-right font-bold text-slate-900" id="modalBuyerLine">0.0% — $0</span>
+
+                            <span class="text-slate-900 font-black pt-2 border-t border-cyan-300 mt-1">Total Proposed Commission</span>
+                            <span class="text-right font-black text-cyan-700 pt-2 border-t border-cyan-300 mt-1" id="modalTotalLine">0.0% — $0</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-3">Not the right numbers? Close this, adjust the sliders, and reopen.</p>
+                    </div>
 
                     <form id="proposalForm">
                         <input type="hidden" name="fi-proposal-listingRate" id="proposalListingRate">
                         <input type="hidden" name="fi-proposal-buyerRate" id="proposalBuyerRate">
                         <input type="hidden" name="fi-proposal-homeValue" id="proposalHomeValue">
+                        <input type="hidden" name="fi-proposal-listingAmount" id="proposalListingAmount">
+                        <input type="hidden" name="fi-proposal-buyerAmount" id="proposalBuyerAmount">
+                        <input type="hidden" name="fi-proposal-totalAmount" id="proposalTotalAmount">
+                        <input type="hidden" name="fi-proposal-totalRate" id="proposalTotalRate">
 
                         <div class="grid sm:grid-cols-2 gap-4 mb-4">
                             <div>
@@ -713,6 +736,10 @@
             document.getElementById('proposalListingRate').value = listingRate.toFixed(1) + '%';
             document.getElementById('proposalBuyerRate').value = buyerRate.toFixed(1) + '%';
             document.getElementById('proposalHomeValue').value = formatCurrency(salePrice);
+            document.getElementById('proposalListingAmount').value = formatCurrency(listAmt);
+            document.getElementById('proposalBuyerAmount').value = formatCurrency(buyerAmt);
+            document.getElementById('proposalTotalAmount').value = formatCurrency(total);
+            document.getElementById('proposalTotalRate').value = (listingRate + buyerRate).toFixed(1) + '%';
         }
 
         salePriceInput.addEventListener('input', updateCalculator);
@@ -724,6 +751,15 @@
 
         // Proposal modal open/close
         function openProposalModal() {
+            // Refresh the visible summary from the current calculator state
+            document.getElementById('modalHomeValue').textContent = document.getElementById('proposalHomeValue').value;
+            document.getElementById('modalListingLine').textContent =
+                document.getElementById('proposalListingRate').value + ' — ' + document.getElementById('proposalListingAmount').value;
+            document.getElementById('modalBuyerLine').textContent =
+                document.getElementById('proposalBuyerRate').value + ' — ' + document.getElementById('proposalBuyerAmount').value;
+            document.getElementById('modalTotalLine').textContent =
+                document.getElementById('proposalTotalRate').value + ' — ' + document.getElementById('proposalTotalAmount').value;
+
             document.getElementById('proposalModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
